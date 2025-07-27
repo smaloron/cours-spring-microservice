@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE instance-profile
+        SYSTEM "https://resources.jetbrains.com/writerside/1.0/product-profile.dtd">
+
+<instance-profile id="sms"
+                 name="Spring Micro Services"
+                 start-page="001-00-intro.md">
+
+    <toc-element topic="001-00-intro.md">
+        <toc-element topic="001-01-spring-cloud.md"/>
+    </toc-element>
+    <toc-element topic="002-00-first-micro-service.md">
+        <toc-element topic="002-01-tp-1.md"/>
+    </toc-element>
+    <toc-element topic="003-00-service-communication.md"/>
+    <toc-element topic="004-00-service-discovery.md">
+        <toc-element topic="004-02-TP-2.md"/>
+        <toc-element topic="004-02-TP-3.md"/>
+        <toc-element topic="004-03-TP-4.md"/>
+    </toc-element>
+    <toc-element topic="005-00-centralized-configuration.md">
+        <toc-element topic="005-01-TP-5.md"/>
+    </toc-element>
+    <toc-element topic="006-00-fault-tolerance.md">
+        <toc-element topic="006-01-TP-6.md"/>
+    </toc-element>
+    <toc-element topic="007-00-api-gateway.md">
+        <toc-element topic="007-01-TP-7.md"/>
+    </toc-element>
+    <toc-element topic="008-00-docker-compose.md">
+        <toc-element topic="008-01-TP-8.md"/>
+    </toc-element>
+    <toc-element topic="009-00-security.md">
+        <toc-element topic="009-01-TP-9.md"/>
+    </toc-element>
+    <toc-element topic="010-00-centralized-logs.md">
+        <toc-element topic="010-01-TP-10.md"/>
+    </toc-element>
+    <toc-element topic="011-00-monitoring.md">
+        <toc-element topic="011-01-TP-11.md"/>
+    </toc-element>
+    <toc-element topic="012-00-distributed-tracing.md">
+        <toc-element topic="012-01-TP-12.md"/>
+    </toc-element>
+    <toc-element topic="013-00-async-communication.md">
+        <toc-element topic="013-01-TP-13.md"/>
+    </toc-element>
+    <toc-element topic="014-00-test.md">
+        <toc-element topic="014-01-TP-14.md"/>
+    </toc-element>
+    <toc-element topic="015-00-conclusion.md"/>
+</instance-profile>
