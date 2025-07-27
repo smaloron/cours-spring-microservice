@@ -1,0 +1,161 @@
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en-US" data-preset="contrast" data-primary-color="#307FFF"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="robots" content="noindex"><meta name="built-on" content="2025-07-27T21:24:57.147127"><title>TP 10 : Mise en Place de la Centralisation des Logs avec EFK | Spring Micro Services</title><script type="application/json" id="virtual-toc-data">[{"id":"objectifs-p-dagogiques","level":0,"title":"Objectifs Pédagogiques","anchor":"#objectifs-p-dagogiques"},{"id":"introduction-assembler-le-centre-de-tri","level":0,"title":"Introduction : Assembler le centre de tri","anchor":"#introduction-assembler-le-centre-de-tri"},{"id":"tape-1-ajout-de-la-stack-efk-docker-compose","level":0,"title":"Étape 1 : Ajout de la Stack EFK à Docker Compose","anchor":"#tape-1-ajout-de-la-stack-efk-docker-compose"},{"id":"tape-2-configuration-de-fluentd","level":0,"title":"Étape 2 : Configuration de Fluentd","anchor":"#tape-2-configuration-de-fluentd"},{"id":"tape-3-configurer-les-microservices-pour-logger-en-json","level":0,"title":"Étape 3 : Configurer les Microservices pour Logger en JSON","anchor":"#tape-3-configurer-les-microservices-pour-logger-en-json"},{"id":"tape-4-lancement-et-exploration-avec-kibana","level":0,"title":"Étape 4 : Lancement et Exploration avec Kibana","anchor":"#tape-4-lancement-et-exploration-avec-kibana"},{"id":"exercice-13-logger-des-informations-m-tier","level":0,"title":"Exercice 13 : Logger des informations métier","anchor":"#exercice-13-logger-des-informations-m-tier"},{"id":"auto-valuation","level":0,"title":"Auto-évaluation","anchor":"#auto-valuation"},{"id":"conclusion","level":0,"title":"Conclusion","anchor":"#conclusion"}]</script><script type="application/json" id="topic-shortcuts"></script><link href="https://resources.jetbrains.com/writerside/apidoc/6.22.0-b776/app.css" rel="stylesheet"><meta name="msapplication-TileColor" content="#000000"><link rel="apple-touch-icon" sizes="180x180" href="https://jetbrains.com/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="https://jetbrains.com/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="https://jetbrains.com/favicon-16x16.png"><meta name="msapplication-TileImage" content="https://resources.jetbrains.com/storage/ui/favicons/mstile-144x144.png"><meta name="msapplication-square70x70logo" content="https://resources.jetbrains.com/storage/ui/favicons/mstile-70x70.png"><meta name="msapplication-square150x150logo" content="https://resources.jetbrains.com/storage/ui/favicons/mstile-150x150.png"><meta name="msapplication-wide310x150logo" content="https://resources.jetbrains.com/storage/ui/favicons/mstile-310x150.png"><meta name="msapplication-square310x310logo" content="https://resources.jetbrains.com/storage/ui/favicons/mstile-310x310.png"><meta name="image" content=""><!-- Open Graph --><meta property="og:title" content="TP 10 : Mise en Place de la Centralisation des Logs avec EFK | Spring Micro Services"><meta property="og:description" content=""><meta property="og:image" content=""><meta property="og:site_name" content="Spring Micro Services Help"><meta property="og:type" content="website"><meta property="og:locale" content="en_US"><meta property="og:url" content="writerside-documentation/010-01-tp-10.html"><!-- End Open Graph --><!-- Twitter Card --><meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content=""><meta name="twitter:title" content="TP 10 : Mise en Place de la Centralisation des Logs avec EFK | Spring Micro Services"><meta name="twitter:description" content=""><meta name="twitter:creator" content=""><meta name="twitter:image:src" content=""><!-- End Twitter Card --><!-- Schema.org WebPage --><script type="application/ld+json">{
+    "@context": "http://schema.org",
+    "@type": "WebPage",
+    "@id": "writerside-documentation/010-01-tp-10.html#webpage",
+    "url": "writerside-documentation/010-01-tp-10.html",
+    "name": "TP 10 : Mise en Place de la Centralisation des Logs avec EFK | Spring Micro Services",
+    "description": "",
+    "image": "",
+    "inLanguage":"en-US"
+}</script><!-- End Schema.org --><!-- Schema.org WebSite --><script type="application/ld+json">{
+    "@type": "WebSite",
+    "@id": "writerside-documentation/#website",
+    "url": "writerside-documentation/",
+    "name": "Spring Micro Services Help"
+}</script><!-- End Schema.org --></head><body data-id="010-01-TP-10" data-main-title="TP 10 : Mise en Place de la Centralisation des Logs avec EFK" data-article-props="{&quot;seeAlsoStyle&quot;:&quot;links&quot;}" data-template="article" data-breadcrumbs="010-00-centralized-logs.md|Module 10 : Logs Centralisés (Pattern EFK) - Voir clair dans le brouillard"><div class="wrapper"><main class="panel _main"><header class="panel__header"><div class="container"><h3>Spring Micro Services  Help</h3><div class="panel-trigger"></div></div></header><section class="panel__content"><div class="container"><article class="article" data-shortcut-switcher="inactive"><h1 data-toc="010-01-TP-10" id="010-01-TP-10.md">TP 10 : Mise en Place de la Centralisation des Logs avec EFK</h1><section class="chapter"><h2 id="objectifs-p-dagogiques" data-toc="objectifs-p-dagogiques">Objectifs P&eacute;dagogiques</h2><p id="-srkmwd_12">&Agrave; la fin de ce TP, vous serez capable de :</p><ul class="list _bullet" id="-srkmwd_13"><li class="list__item" id="-srkmwd_14"><p id="-srkmwd_19">Ajouter Elasticsearch, Fluentd et Kibana &agrave; votre fichier <code class="code" id="-srkmwd_20">docker-compose.yml</code>.</p></li><li class="list__item" id="-srkmwd_15"><p id="-srkmwd_21">Cr&eacute;er un fichier de configuration pour Fluentd afin de collecter les logs Docker.</p></li><li class="list__item" id="-srkmwd_16"><p id="-srkmwd_22">Modifier la configuration Logback de vos microservices pour qu'ils produisent des logs au format JSON.</p></li><li class="list__item" id="-srkmwd_17"><p id="-srkmwd_23">G&eacute;n&eacute;rer du trafic et utiliser Kibana pour visualiser, rechercher et filtrer les logs de mani&egrave;re centralis&eacute;e.</p></li><li class="list__item" id="-srkmwd_18"><p id="-srkmwd_24">Identifier et utiliser l'ID de trace pour suivre une requ&ecirc;te.</p></li></ul></section><section class="chapter"><h2 id="introduction-assembler-le-centre-de-tri" data-toc="introduction-assembler-le-centre-de-tri">Introduction : Assembler le centre de tri</h2><p id="-srkmwd_25">La th&eacute;orie est claire, passons &agrave; la construction. Nous allons ajouter trois nouveaux &quot;b&acirc;timents&quot; &agrave; notre ville &quot; GestBook&quot; via Docker Compose :</p><ol class="list _decimal" id="-srkmwd_26" type="1"><li class="list__item" id="-srkmwd_28"><p id="-srkmwd_31"><span class="control" id="-srkmwd_32">L'entrep&ocirc;t (Elasticsearch) :</span> pour stocker tous les logs.</p></li><li class="list__item" id="-srkmwd_29"><p id="-srkmwd_33"><span class="control" id="-srkmwd_34">L'agence postale (Fluentd) :</span> pour collecter les logs de tous les autres conteneurs et les livrer &agrave; l'entrep&ocirc;t.</p></li><li class="list__item" id="-srkmwd_30"><p id="-srkmwd_35"><span class="control" id="-srkmwd_36">Le bureau de consultation (Kibana) :</span> pour nous permettre de fouiller dans l'entrep&ocirc;t.</p></li></ol><p id="-srkmwd_27">Ensuite, nous allons &quot;former&quot; nos employ&eacute;s (nos microservices) pour qu'ils &eacute;crivent leurs rapports (logs) dans un format standardis&eacute; (JSON) que tout le monde peut comprendre. &Agrave; la fin, une seule interface, Kibana, nous donnera une vue compl&egrave;te sur l'activit&eacute; de toute notre application.</p></section><section class="chapter"><h2 id="tape-1-ajout-de-la-stack-efk-docker-compose" data-toc="tape-1-ajout-de-la-stack-efk-docker-compose">&Eacute;tape 1 : Ajout de la Stack EFK &agrave; Docker Compose</h2><section class="procedure-steps" id="-srkmwd_37"><p id="-srkmwd_38">Ouvrez votre fichier <code class="code" id="-srkmwd_41">docker-compose.yml</code>. Nous allons y ajouter trois nouveaux services.</p><div class="code-block" data-lang="yaml">
+# Dans docker-compose.yml
+services:
+  # ... (tous vos services existants : config-server, eureka, etc.)
+
+  # 7. Elasticsearch : La base de données de logs
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.13.0 # Utilisez une version récente
+    ports:
+      - &quot;9200:9200&quot;
+      - &quot;9300:9300&quot;
+    environment:
+      - discovery.type=single-node # Mode mono-noeud pour le développement
+      - xpack.security.enabled=false # Désactive la sécurité pour simplifier
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+
+  # 8. Kibana : L'interface de visualisation
+  kibana:
+    image: docker.elastic.co/kibana/kibana:8.13.0
+    ports:
+      - &quot;5601:5601&quot; # Port de l'interface web de Kibana
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elasticsearch:9200 # Dit à Kibana où trouver ES
+    depends_on:
+      - elasticsearch
+
+  # 9. Fluentd : Le collecteur de logs
+  fluentd:
+    image: fluent/fluentd:v1.16-1
+    volumes:
+      # On monte notre futur fichier de configuration
+      - ./fluentd/conf:/fluentd/etc
+      # On monte le socket Docker pour que Fluentd puisse accéder aux logs des conteneurs
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - elasticsearch
+
+# ...
+volumes:
+  # ... (postgres_data si vous l'avez)
+  es_data: # Déclaration du volume pour les données d'Elasticsearch
+</div><aside class="prompt" data-type="warning" data-title="" id="-srkmwd_40"><p><b id="-srkmwd_42">Configuration d'Elasticsearch</b></p><p id="-srkmwd_43">Les versions r&eacute;centes d'Elasticsearch activent la s&eacute;curit&eacute; par d&eacute;faut (HTTPS, authentification). Pour un TP, il est beaucoup plus simple de la d&eacute;sactiver avec <code class="code" id="-srkmwd_44">xpack.security.enabled=false</code>. En production, il faudrait g&eacute;rer les certificats et les mots de passe.</p></aside><ol class="list _decimal"></ol></section></section><section class="chapter"><h2 id="tape-2-configuration-de-fluentd" data-toc="tape-2-configuration-de-fluentd">&Eacute;tape 2 : Configuration de Fluentd</h2><p id="-srkmwd_45">Fluentd a besoin d'un fichier de configuration pour savoir quoi faire.</p><section class="procedure-steps" id="-srkmwd_46"><p id="-srkmwd_47">1. &Agrave; la racine de votre projet <code class="code" id="-srkmwd_53">gestbook-microservices</code>, cr&eacute;ez un nouveau dossier <code class="code" id="-srkmwd_54">fluentd</code>.</p><p id="-srkmwd_48">2. &Agrave; l'int&eacute;rieur de `fluentd`, cr&eacute;ez un dossier <code class="code" id="-srkmwd_55">conf</code>.</p><p id="-srkmwd_49">3. Dans <code class="code" id="-srkmwd_56">fluentd/conf</code>, cr&eacute;ez un fichier <code class="code" id="-srkmwd_57">fluent.conf</code>.</p><div class="code-block" data-lang="apacheconf">
+# fluent.conf
+
+# === INPUT ===
+# D'où viennent les logs ?
+# On utilise le plugin 'forward' pour écouter les logs envoyés
+# par le logging driver de Docker.
+&lt;source&gt;
+  @type forward
+  port 24224
+  bind 0.0.0.0
+&lt;/source&gt;
+
+# === FILTER ===
+# Transformer les logs avant de les envoyer.
+# On veut parser le message de log s'il est au format JSON.
+&lt;filter **&gt;
+  @type parser
+  key_name log
+  &lt;parse&gt;
+    @type json
+  &lt;/parse&gt;
+&lt;/filter&gt;
+
+# === OUTPUT ===
+# Où envoyer les logs ?
+# On utilise le plugin 'elasticsearch'.
+&lt;match **&gt;
+  @type elasticsearch
+  host elasticsearch
+  port 9200
+  logstash_format true
+  logstash_prefix fluentd
+  logstash_dateformat %Y%m%d
+  include_tag_key true
+  type_name _doc
+  tag_key @log_name
+  # Gère les erreurs de connexion à Elasticsearch
+  &lt;buffer&gt;
+    @type file
+    path /fluentd/log/buffer
+    flush_interval 10s
+  &lt;/buffer&gt;
+&lt;/match&gt;
+</div><p id="-srkmwd_51">4. Nous devons maintenant dire &agrave; Docker Compose que nos services doivent envoyer leurs logs &agrave; Fluentd. Modifiez chaque service applicatif (<code class="code" id="-srkmwd_58">product-service</code>, <code class="code" id="-srkmwd_59">order-service</code>, etc.) dans <code class="code" id="-srkmwd_60">docker-compose.yml</code> en ajoutant un bloc <code class="code" id="-srkmwd_61">logging</code>.</p><p> <code class="code" id="-srkmwd_52"># Exemple pour product-service (&agrave; faire pour tous les services applicatifs) product-service: image: product-service:latest # ... (ports, environment, depends_on) logging: driver: &quot;fluentd&quot; options: fluentd-address: localhost:24224 tag: gestbook.{{.Name}} # Tag les logs avec le nom du conteneur</code></p><ol class="list _decimal"></ol></section></section><section class="chapter"><h2 id="tape-3-configurer-les-microservices-pour-logger-en-json" data-toc="tape-3-configurer-les-microservices-pour-logger-en-json">&Eacute;tape 3 : Configurer les Microservices pour Logger en JSON</h2><p id="-srkmwd_62">Pour que Fluentd puisse bien parser les logs, nos applications Spring Boot doivent les &eacute;crire en JSON. Nous allons utiliser <code class="code" id="-srkmwd_64">logstash-logback-encoder</code> pour cela.</p><section class="procedure-steps" id="-srkmwd_63"><p id="-srkmwd_65"><b id="-srkmwd_76">Pour chaque microservice</b> (`product-service`, `order-service`, `api-gateway`, etc.) :</p><p id="-srkmwd_66">1. <b id="-srkmwd_77">Ajouter la d&eacute;pendance dans `pom.xml`</b></p><p> ```xml </p><p> ``` </p><p id="-srkmwd_68">2. <b id="-srkmwd_81">Cr&eacute;er un fichier de configuration Logback</b></p><p id="-srkmwd_69">Dans <code class="code" id="-srkmwd_82">src/main/resources</code>, cr&eacute;ez un fichier <code class="code" id="-srkmwd_83">logback-spring.xml</code>. Ce fichier va surcharger la configuration de logging par d&eacute;faut de Spring Boot.</p><div class="code-block" data-lang="markup">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
+&lt;configuration&gt;
+    &lt;!-- Inclut la configuration de base de Spring Boot --&gt;
+    &lt;include resource=&quot;org/springframework/boot/logging/logback/base.xml&quot;/&gt;
+
+    &lt;!-- Appender pour la console qui écrit en JSON --&gt;
+    &lt;appender name=&quot;CONSOLE_JSON&quot;
+              class=&quot;ch.qos.logback.core.ConsoleAppender&quot;&gt;
+        &lt;encoder
+            class=&quot;net.logstash.logback.encoder.LogstashEncoder&quot;&gt;
+            &lt;!-- Ajoute le nom du service aux logs --&gt;
+            &lt;customFields&gt;{&quot;service_name&quot;:&quot;${spring.application.name}&quot;}&lt;/customFields&gt;
+        &lt;/encoder&gt;
+    &lt;/appender&gt;
+
+    &lt;!-- On remplace l'appender par défaut par notre appender JSON --&gt;
+    &lt;root level=&quot;INFO&quot;&gt;
+        &lt;appender-ref ref=&quot;CONSOLE_JSON&quot; /&gt;
+    &lt;/root&gt;
+
+&lt;/configuration&gt;
+</div><p id="-srkmwd_71">3. <b id="-srkmwd_84">Ajouter la d&eacute;pendance Micrometer Tracing</b></p><p id="-srkmwd_72">Pour avoir les `trace_id` et `span_id` dans nos logs, ajoutons Micrometer Tracing. Cela remplacera Spring Cloud Sleuth qui est maintenant d&eacute;pr&eacute;ci&eacute;.</p><div class="code-block" data-lang="markup">
+&lt;!-- Dépendance pour l'instrumentation du tracing --&gt;
+&lt;dependency&gt;
+    &lt;groupId&gt;io.micrometer&lt;/groupId&gt;
+    &lt;artifactId&gt;micrometer-tracing-bridge-brave&lt;/artifactId&gt;
+&lt;/dependency&gt;
+</div><p id="-srkmwd_74">4. <b id="-srkmwd_85">Reconstruire les images Docker</b></p><p id="-srkmwd_75">Apr&egrave;s avoir fait ces modifications pour <b id="-srkmwd_86">tous</b> vos services, n'oubliez pas de reconstruire leurs images Docker (`mvn clean package` et `docker build ...`).</p><ol class="list _decimal"></ol></section></section><section class="chapter"><h2 id="tape-4-lancement-et-exploration-avec-kibana" data-toc="tape-4-lancement-et-exploration-avec-kibana">&Eacute;tape 4 : Lancement et Exploration avec Kibana</h2><section class="procedure-steps" id="-srkmwd_87"><p id="-srkmwd_89">1. Lancez tout l'&eacute;cosyst&egrave;me avec <code class="code" id="-srkmwd_99">docker-compose up</code>.</p><p id="-srkmwd_90">2. Attendez que tout soit d&eacute;marr&eacute;. Cela peut prendre un peu de temps, surtout pour Elasticsearch.</p><p id="-srkmwd_91">3. Ouvrez Kibana dans votre navigateur : <a href="http://localhost:5601/" id="-srkmwd_100" data-external="true" rel="noopener noreferrer" target="_blank">http://localhost:5601/</a>.</p><p id="-srkmwd_92">4. <b id="-srkmwd_101">Configurer Kibana (premi&egrave;re fois)</b></p><ul class="list _bullet" id="-srkmwd_93"><li class="list__item" id="-srkmwd_102"><p>Cliquez sur le menu &quot;hamburger&quot; en haut &agrave; gauche, allez dans &quot;Management&quot; &gt; &quot;Stack Management&quot;.</p></li><li class="list__item" id="-srkmwd_103"><p>Sous &quot;Kibana&quot;, cliquez sur &quot;Data Views&quot; (ou &quot;Index Patterns&quot;).</p></li><li class="list__item" id="-srkmwd_104"><p>Cliquez sur &quot;Create data view&quot;.</p></li><li class="list__item" id="-srkmwd_105"><p>Dans le champ &quot;Name&quot;, mettez un nom, par exemple `gestbook-logs`.</p></li><li class="list__item" id="-srkmwd_106"><p>Dans le champ &quot;Index pattern&quot;, tapez `fluentd*`. Kibana devrait d&eacute;tecter les index cr&eacute;&eacute;s par Fluentd.</p></li><li class="list__item" id="-srkmwd_107"><p>Dans &quot;Timestamp field&quot;, s&eacute;lectionnez `@timestamp`.</p></li><li class="list__item" id="-srkmwd_108"><p>Cliquez sur &quot;Save data view to Kibana&quot;.</p></li></ul><p id="-srkmwd_94">5. <b id="-srkmwd_109">Explorer les logs</b></p><ul class="list _bullet" id="-srkmwd_95"><li class="list__item" id="-srkmwd_110"><p>Cliquez &agrave; nouveau sur le menu hamburger et allez dans &quot;Analytics&quot; &gt; &quot;Discover&quot;.</p></li><li class="list__item" id="-srkmwd_111"><p>Vous y &ecirc;tes ! Vous devriez voir un flux de logs JSON en provenance de tous vos conteneurs.</p></li></ul><p id="-srkmwd_96">6. <b id="-srkmwd_112">G&eacute;n&eacute;rer du trafic et filtrer</b></p><ul class="list _bullet" id="-srkmwd_97"><li class="list__item" id="-srkmwd_113"><p>Utilisez votre client HTTP pour faire quelques appels &agrave; votre API via la Gateway (ex: <code class="code" id="-srkmwd_118">GET /api/products</code>, <code class="code" id="-srkmwd_119">POST /api/orders</code>).</p></li><li class="list__item" id="-srkmwd_114"><p>Rafra&icirc;chissez la vue &quot;Discover&quot; dans Kibana. De nouveaux logs apparaissent.</p></li><li class="list__item" id="-srkmwd_115"><p>Cliquez sur un log de l' <code class="code" id="-srkmwd_120">api-gateway</code>. Rep&eacute;rez le champ <code class="code" id="-srkmwd_121">trace.trace_id</code>. Cliquez sur la petite ic&ocirc;ne &quot;+&quot; &agrave; c&ocirc;t&eacute; pour filtrer sur cette valeur.</p></li><li class="list__item" id="-srkmwd_116"><p>Magie ! Kibana n'affiche plus que les logs de tous les services qui correspondent &agrave; cette seule requ&ecirc;te. Vous pouvez suivre son parcours de bout en bout.</p></li><li class="list__item" id="-srkmwd_117"><p>Utilisez la barre de recherche KQL (Kibana Query Language) en haut pour filtrer : </p><ul class="list _bullet" id="-srkmwd_122"><li class="list__item" id="-srkmwd_123"><p><code class="code" id="-srkmwd_126">level : &quot;ERROR&quot;</code></p></li><li class="list__item" id="-srkmwd_124"><p><code class="code" id="-srkmwd_127">service_name : &quot;product-service&quot;</code></p></li><li class="list__item" id="-srkmwd_125"><p><code class="code" id="-srkmwd_128">message : *stock*</code></p></li></ul></li></ul><figure id="-srkmwd_98"><img alt="Vue Discover dans Kibana" src="${primarySource}" title="Vue Discover dans Kibana"></figure><ol class="list _decimal"></ol></section></section><section class="chapter"><h2 id="exercice-13-logger-des-informations-m-tier" data-toc="exercice-13-logger-des-informations-m-tier">Exercice 13 : Logger des informations m&eacute;tier</h2><p id="-srkmwd_129"><span class="control" id="-srkmwd_134">Contexte :</span> Les logs techniques c'est bien, mais les logs m&eacute;tier, c'est mieux. Nous voulons ajouter des champs personnalis&eacute;s &agrave; nos logs JSON pour faciliter la recherche.</p><p id="-srkmwd_130"><span class="control" id="-srkmwd_135">Votre mission :</span></p><ol class="list _decimal" id="-srkmwd_131" type="1"><li class="list__item" id="-srkmwd_136"><p id="-srkmwd_141">Dans le <code class="code" id="-srkmwd_142">ProductController</code> de <code class="code" id="-srkmwd_143">product-service</code>, modifiez la m&eacute;thode <code class="code" id="-srkmwd_144">getProductById</code>.</p></li><li class="list__item" id="-srkmwd_137"><p id="-srkmwd_145">Utilisez SLF4J et son MDC (Mapped Diagnostic Context) pour ajouter l'ID du produit demand&eacute; au contexte de log.</p></li><li class="list__item" id="-srkmwd_138"><p id="-srkmwd_146">Faites en sorte que votre log de succ&egrave;s contienne cette information.</p></li><li class="list__item" id="-srkmwd_139"><p id="-srkmwd_147">Faites un appel &agrave; <code class="code" id="-srkmwd_148">GET /api/products/1</code> via la Gateway.</p></li><li class="list__item" id="-srkmwd_140"><p id="-srkmwd_149">Retrouvez le log correspondant dans Kibana et v&eacute;rifiez qu'un nouveau champ contenant <code class="code" id="-srkmwd_150">productId=1</code> est apparu.</p></li></ol><p id="-srkmwd_132"><span class="control" id="-srkmwd_151">Indice :</span> L'utilisation du MDC se fait avec <code class="code" id="-srkmwd_152">MDC.put(&quot;cle&quot;, &quot;valeur&quot;);</code> avant le log, et <code class="code" id="-srkmwd_153">MDC.remove(&quot;cle&quot;);</code> apr&egrave;s pour nettoyer.</p><section class="chapter"><div class="collapse"><div class="collapse__title"><h3 id="correction-exercice-13" data-toc="correction-exercice-13">Correction exercice 13</h3></div><div class="collapse__content"><ol class="list _decimal" id="-srkmwd_154" type="1"><li class="list__item" id="-srkmwd_156"><p id="-srkmwd_158">et 2. Voici le <code class="code" id="-srkmwd_161">ProductController</code> modifi&eacute;.</p><div class="code-block" data-lang="java">
+// Dans ProductController.java du projet product-service
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.MDC; // Important !
+
+// ...
+
+@RestController
+@RequestMapping(&quot;/api/products&quot;)
+public class ProductController {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProductController.class);
+    // ... (repository)
+
+    @GetMapping(&quot;/{id}&quot;)
+    public ResponseEntity&lt;Product&gt; getProductById(@PathVariable Long id) {
+        // Ajoute l'ID du produit au contexte de log pour cette requête
+        MDC.put(&quot;productId&quot;, String.valueOf(id));
+
+        LOGGER.info(&quot;Attempting to find product.&quot;);
+        Optional&lt;Product&gt; product = productRepository.findById(id);
+
+        // Nettoie le contexte pour ne pas polluer les logs suivants
+        MDC.remove(&quot;productId&quot;);
+
+        return product.map(ResponseEntity::ok)
+                      .orElseGet(() -&gt; ResponseEntity.notFound().build());
+    }
+
+    // ...
+}
+</div><p id="-srkmwd_160">L'encodeur Logstash que nous avons configur&eacute; sait lire le MDC et ajouter automatiquement ses cl&eacute;s/valeurs comme champs dans le JSON final.</p></li><li class="list__item" id="-srkmwd_157"><p id="-srkmwd_162">&agrave; 5. Apr&egrave;s avoir reconstruit l'image, relanc&eacute; l'&eacute;cosyst&egrave;me et fait l'appel, vous trouverez le log dans Kibana. En l'inspectant, vous verrez un nouveau champ <code class="code" id="-srkmwd_163">productId: &quot;1&quot;</code> au m&ecirc;me niveau que <code class="code" id="-srkmwd_164">message</code>, <code class="code" id="-srkmwd_165">level</code>, etc. Vous pouvez maintenant filtrer sur ce champ m&eacute;tier !</p></li></ol></div></div></section></section><section class="chapter"><h2 id="auto-valuation" data-toc="auto-valuation">Auto-&eacute;valuation</h2><ol class="list _decimal" id="-srkmwd_166" type="1"><li class="list__item" id="-srkmwd_168"><p id="-srkmwd_173"><span class="control" id="-srkmwd_175">(QCM)</span> Quelle est la fonction principale de Kibana dans la stack EFK ?</p><ul class="list _bullet" id="-srkmwd_174"><li class="list__item" id="-srkmwd_176"><p id="-srkmwd_180">A) Stocker les logs.</p></li><li class="list__item" id="-srkmwd_177"><p id="-srkmwd_181">B) Collecter les logs.</p></li><li class="list__item" id="-srkmwd_178"><p id="-srkmwd_182">C) Visualiser et interroger les logs.</p></li><li class="list__item" id="-srkmwd_179"><p id="-srkmwd_183">D) Formater les logs en JSON.</p></li></ul></li><li class="list__item" id="-srkmwd_169"><p id="-srkmwd_184"><span class="control" id="-srkmwd_185">(Question ouverte)</span> Pourquoi doit-on configurer le &quot;logging driver&quot; dans <code class="code" id="-srkmwd_186">docker-compose.yml</code> pour chaque service ?</p></li><li class="list__item" id="-srkmwd_170"><p id="-srkmwd_187"><span class="control" id="-srkmwd_189">(QCM)</span> La d&eacute;pendance <code class="code" id="-srkmwd_190">micrometer-tracing-bridge-brave</code> est principalement utilis&eacute;e pour :</p><ul class="list _bullet" id="-srkmwd_188"><li class="list__item" id="-srkmwd_191"><p id="-srkmwd_195">A) Formater les logs en JSON.</p></li><li class="list__item" id="-srkmwd_192"><p id="-srkmwd_196">B) Envoyer les logs &agrave; Elasticsearch.</p></li><li class="list__item" id="-srkmwd_193"><p id="-srkmwd_197">C) G&eacute;n&eacute;rer et propager les ID de trace et de span.</p></li><li class="list__item" id="-srkmwd_194"><p id="-srkmwd_198">D) S&eacute;curiser les endpoints de logs.</p></li></ul></li><li class="list__item" id="-srkmwd_171"><p id="-srkmwd_199"><span class="control" id="-srkmwd_200">(Question ouverte)</span> J'ai un bug dans <code class="code" id="-srkmwd_201">order-service</code> qui ne se produit que lorsqu'il est appel&eacute; par l' <code class="code" id="-srkmwd_202">api-gateway</code>. Comment puis-je utiliser Kibana pour voir uniquement les logs de <code class="code" id="-srkmwd_203">order-service</code> qui ont &eacute;t&eacute; initi&eacute;s par une requ&ecirc;te sp&eacute;cifique &agrave; la gateway ?</p></li><li class="list__item" id="-srkmwd_172"><p id="-srkmwd_204"><span class="control" id="-srkmwd_206">(QCM)</span> Dans la configuration <code class="code" id="-srkmwd_207">fluent.conf</code>, la section <code class="code" id="-srkmwd_208">&lt;source&gt;</code> d&eacute;finit :</p><ul class="list _bullet" id="-srkmwd_205"><li class="list__item" id="-srkmwd_209"><p id="-srkmwd_213">A) O&ugrave; les logs doivent &ecirc;tre envoy&eacute;s.</p></li><li class="list__item" id="-srkmwd_210"><p id="-srkmwd_214">B) Comment les logs doivent &ecirc;tre transform&eacute;s.</p></li><li class="list__item" id="-srkmwd_211"><p id="-srkmwd_215">C) D'o&ugrave; les logs proviennent.</p></li><li class="list__item" id="-srkmwd_212"><p id="-srkmwd_216">D) Le format de l'index dans Elasticsearch.</p></li></ul></li></ol></section><section class="chapter"><h2 id="conclusion" data-toc="conclusion">Conclusion</h2><p id="-srkmwd_217">Vous avez transform&eacute; votre application &quot;aveugle&quot; en un syst&egrave;me <span class="control" id="-srkmwd_221">observable</span>. La mise en place de la centralisation des logs est un investissement qui porte ses fruits d&egrave;s le premier incident en production.</p><p id="-srkmwd_218">Gr&acirc;ce &agrave; la stack <span class="control" id="-srkmwd_222">EFK</span> et &agrave; la puissance des <span class="control" id="-srkmwd_223">logs structur&eacute;s</span>, vous &ecirc;tes maintenant capable de :</p><ul class="list _bullet" id="-srkmwd_219"><li class="list__item" id="-srkmwd_224"><p id="-srkmwd_227">Consolider les logs de tous vos services en un seul endroit.</p></li><li class="list__item" id="-srkmwd_225"><p id="-srkmwd_228">Effectuer des recherches et des filtrages complexes via l'interface de <span class="control" id="-srkmwd_229">Kibana</span>.</p></li><li class="list__item" id="-srkmwd_226"><p id="-srkmwd_230">Suivre une requ&ecirc;te de bout en bout gr&acirc;ce aux <span class="control" id="-srkmwd_231">ID de trace</span>.</p></li></ul><p id="-srkmwd_220">Votre capacit&eacute; &agrave; diagnostiquer et &agrave; d&eacute;boguer votre architecture distribu&eacute;e a fait un bond de g&eacute;ant. Il nous reste une derni&egrave;re pi&egrave;ce &agrave; ajouter au puzzle de l'observabilit&eacute; : les m&eacute;triques et le monitoring, pour passer du &quot;que s'est-il pass&eacute; ?&quot; (logs) au &quot;comment &ccedil;a va en ce moment ?&quot; (monitoring). Ce sera l'objet du prochain module avec Prometheus et Grafana.</p></section><div class="last-modified">17 juillet 2025</div><div data-feedback-placeholder="true"></div><div class="navigation-links _bottom"><a href="010-00-centralized-logs.html" class="navigation-links__prev">Module 10 : Logs Centralis&eacute;s (Pattern EFK) - Voir clair dans le brouillard</a><a href="011-00-monitoring.html" class="navigation-links__next">Module 11 : Monitoring et M&eacute;triques (Prometheus &amp; Grafana) - Prendre le pouls du syst&egrave;me</a></div></article><div id="disqus_thread"></div></div></section></main></div><script src="https://resources.jetbrains.com/writerside/apidoc/6.22.0-b776/app.js"></script></body></html>

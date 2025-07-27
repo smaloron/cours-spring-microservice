@@ -1,0 +1,203 @@
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en-US" data-preset="contrast" data-primary-color="#307FFF"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="robots" content="noindex"><meta name="built-on" content="2025-07-27T21:24:57.212465"><title>TP 13 : D&eacute;couplage de Services avec RabbitMQ | Spring Micro Services</title><script type="application/json" id="virtual-toc-data">[{"id":"objectifs-p-dagogiques","level":0,"title":"Objectifs Pédagogiques","anchor":"#objectifs-p-dagogiques"},{"id":"introduction-laisser-un-message-sur-le-r-pondeur","level":0,"title":"Introduction : Laisser un message sur le répondeur","anchor":"#introduction-laisser-un-message-sur-le-r-pondeur"},{"id":"tape-1-ajout-de-rabbitmq-docker-compose","level":0,"title":"Étape 1 : Ajout de RabbitMQ à Docker Compose","anchor":"#tape-1-ajout-de-rabbitmq-docker-compose"},{"id":"tape-2-cr-ation-du-notification-service-le-consommateur","level":0,"title":"Étape 2 : Création du notification-service (le Consommateur)","anchor":"#tape-2-cr-ation-du-notification-service-le-consommateur"},{"id":"tape-3-modification-de-order-service-le-producteur","level":0,"title":"Étape 3 : Modification de order-service (le Producteur)","anchor":"#tape-3-modification-de-order-service-le-producteur"},{"id":"tape-4-lancement-et-validation","level":0,"title":"Étape 4 : Lancement et Validation","anchor":"#tape-4-lancement-et-validation"},{"id":"exercice-16-envoyer-un-objet-complexe","level":0,"title":"Exercice 16 : Envoyer un objet complexe","anchor":"#exercice-16-envoyer-un-objet-complexe"},{"id":"auto-valuation","level":0,"title":"Auto-évaluation","anchor":"#auto-valuation"},{"id":"conclusion","level":0,"title":"Conclusion","anchor":"#conclusion"}]</script><script type="application/json" id="topic-shortcuts"></script><link href="https://resources.jetbrains.com/writerside/apidoc/6.22.0-b776/app.css" rel="stylesheet"><meta name="msapplication-TileColor" content="#000000"><link rel="apple-touch-icon" sizes="180x180" href="https://jetbrains.com/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="https://jetbrains.com/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="https://jetbrains.com/favicon-16x16.png"><meta name="msapplication-TileImage" content="https://resources.jetbrains.com/storage/ui/favicons/mstile-144x144.png"><meta name="msapplication-square70x70logo" content="https://resources.jetbrains.com/storage/ui/favicons/mstile-70x70.png"><meta name="msapplication-square150x150logo" content="https://resources.jetbrains.com/storage/ui/favicons/mstile-150x150.png"><meta name="msapplication-wide310x150logo" content="https://resources.jetbrains.com/storage/ui/favicons/mstile-310x150.png"><meta name="msapplication-square310x310logo" content="https://resources.jetbrains.com/storage/ui/favicons/mstile-310x310.png"><meta name="image" content=""><!-- Open Graph --><meta property="og:title" content="TP 13 : D&eacute;couplage de Services avec RabbitMQ | Spring Micro Services"><meta property="og:description" content=""><meta property="og:image" content=""><meta property="og:site_name" content="Spring Micro Services Help"><meta property="og:type" content="website"><meta property="og:locale" content="en_US"><meta property="og:url" content="writerside-documentation/013-01-tp-13.html"><!-- End Open Graph --><!-- Twitter Card --><meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content=""><meta name="twitter:title" content="TP 13 : D&eacute;couplage de Services avec RabbitMQ | Spring Micro Services"><meta name="twitter:description" content=""><meta name="twitter:creator" content=""><meta name="twitter:image:src" content=""><!-- End Twitter Card --><!-- Schema.org WebPage --><script type="application/ld+json">{
+    "@context": "http://schema.org",
+    "@type": "WebPage",
+    "@id": "writerside-documentation/013-01-tp-13.html#webpage",
+    "url": "writerside-documentation/013-01-tp-13.html",
+    "name": "TP 13 : D&eacute;couplage de Services avec RabbitMQ | Spring Micro Services",
+    "description": "",
+    "image": "",
+    "inLanguage":"en-US"
+}</script><!-- End Schema.org --><!-- Schema.org WebSite --><script type="application/ld+json">{
+    "@type": "WebSite",
+    "@id": "writerside-documentation/#website",
+    "url": "writerside-documentation/",
+    "name": "Spring Micro Services Help"
+}</script><!-- End Schema.org --></head><body data-id="013-01-TP-13" data-main-title="TP 13 : Découplage de Services avec RabbitMQ" data-article-props="{&quot;seeAlsoStyle&quot;:&quot;links&quot;}" data-template="article" data-breadcrumbs="013-00-async-communication.md|Module 13 : Communication Asynchrone (RabbitMQ / Kafka) - Le Découplage Ultime"><div class="wrapper"><main class="panel _main"><header class="panel__header"><div class="container"><h3>Spring Micro Services  Help</h3><div class="panel-trigger"></div></div></header><section class="panel__content"><div class="container"><article class="article" data-shortcut-switcher="inactive"><h1 data-toc="013-01-TP-13" id="013-01-TP-13.md">TP 13 : Découplage de Services avec RabbitMQ</h1><section class="chapter"><h2 id="objectifs-p-dagogiques" data-toc="objectifs-p-dagogiques">Objectifs P&eacute;dagogiques</h2><p id="rpjeer_12">&Agrave; la fin de ce TP, vous serez capable de :</p><ul class="list _bullet" id="rpjeer_13"><li class="list__item" id="rpjeer_14"><p id="rpjeer_19">Ajouter RabbitMQ &agrave; votre <code class="code" id="rpjeer_20">docker-compose.yml</code>.</p></li><li class="list__item" id="rpjeer_15"><p id="rpjeer_21">Configurer une application Spring Boot pour se connecter &agrave; RabbitMQ.</p></li><li class="list__item" id="rpjeer_16"><p id="rpjeer_22">Utiliser <code class="code" id="rpjeer_23">RabbitTemplate</code> pour publier un message dans un Exchange.</p></li><li class="list__item" id="rpjeer_17"><p id="rpjeer_24">Utiliser l'annotation <code class="code" id="rpjeer_25">@RabbitListener</code> pour consommer un message depuis une Queue.</p></li><li class="list__item" id="rpjeer_18"><p id="rpjeer_26">Valider le d&eacute;couplage en observant le comportement du syst&egrave;me lorsqu'un consommateur est en panne.</p></li></ul></section><section class="chapter"><h2 id="introduction-laisser-un-message-sur-le-r-pondeur" data-toc="introduction-laisser-un-message-sur-le-r-pondeur">Introduction : Laisser un message sur le r&eacute;pondeur</h2><p id="rpjeer_27">Nous allons modifier notre sc&eacute;nario de cr&eacute;ation de commande. Actuellement, quand une commande est cr&eacute;&eacute;e, la r&eacute;ponse est envoy&eacute;e &agrave; l'utilisateur et c'est tout. Nous voulons maintenant envoyer un email de confirmation.</p><p id="rpjeer_28">L'approche synchrone serait que l' <code class="code" id="rpjeer_30">order-service</code> appelle un <code class="code" id="rpjeer_31">notification-service</code>. Mais si le service de notification est lent ou en panne, cela ralentit ou fait &eacute;chouer la cr&eacute;ation de commande, ce qui est inacceptable.</p><p id="rpjeer_29">Nous allons donc utiliser l'approche asynchrone avec RabbitMQ. L' <code class="code" id="rpjeer_32">order-service</code> (le <span class="control" id="rpjeer_33">Producteur</span>) va simplement &quot; laisser un message&quot; <code class="code" id="rpjeer_34">OrderCreatedEvent</code> dans une &quot;bo&icirc;te aux lettres&quot; RabbitMQ. Il ne saura jamais qui le lira. Nous allons cr&eacute;er un tout nouveau service, le <code class="code" id="rpjeer_35">notification-service</code> (le <span class="control" id="rpjeer_36">Consommateur</span>), dont le seul travail sera d'&eacute;couter cette bo&icirc;te aux lettres et de &quot;traiter le courrier&quot; (en simulant l'envoi d'un email) d&egrave;s qu'un message arrive.</p></section><section class="chapter"><h2 id="tape-1-ajout-de-rabbitmq-docker-compose" data-toc="tape-1-ajout-de-rabbitmq-docker-compose">&Eacute;tape 1 : Ajout de RabbitMQ &agrave; Docker Compose</h2><section class="procedure-steps" id="rpjeer_37"><p id="rpjeer_38">Ouvrez votre fichier <code class="code" id="rpjeer_41">docker-compose.yml</code>. Ajoutons notre service de messagerie.</p><div class="code-block" data-lang="yaml">
+# Dans docker-compose.yml
+services:
+  # ... (tous vos services existants)
+
+  # 13. RabbitMQ : Le Message Broker
+  rabbitmq:
+    image: rabbitmq:3.13-management # L'image 'management' inclut une interface web
+    ports:
+      # Port pour l'interface de management
+      - &quot;15672:15672&quot;
+      # Port pour la communication AMQP
+      - &quot;5672:5672&quot;
+    environment:
+      # Identifiants par défaut, à changer en production
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+
+# ...
+volumes:
+  # ... (autres volumes)
+  rabbitmq_data:
+</div><p id="rpjeer_40">Lancez RabbitMQ pour la premi&egrave;re fois avec <code class="code" id="rpjeer_42">docker-compose up rabbitmq</code>. Une fois d&eacute;marr&eacute;, ouvrez l'interface de management dans votre navigateur : <a href="http://localhost:15672/" id="rpjeer_43" data-external="true" rel="noopener noreferrer" target="_blank">http://localhost:15672/</a>. Le login/mot de passe par d&eacute;faut est `guest` / `guest`.</p><ol class="list _decimal"></ol></section></section><section class="chapter"><h2 id="tape-2-cr-ation-du-notification-service-le-consommateur" data-toc="tape-2-cr-ation-du-notification-service-le-consommateur">&Eacute;tape 2 : Cr&eacute;ation du <code class="code" id="rpjeer_46">notification-service</code> (le Consommateur)</h2><section class="procedure-steps" id="rpjeer_45"><p id="rpjeer_47"><b id="rpjeer_59">2.1. Cr&eacute;ation du projet</b></p><p id="rpjeer_48">Retournez sur <a href="https://start.spring.io/" id="rpjeer_60" data-external="true" rel="noopener noreferrer" target="_blank">start.spring.io</a>:</p><ul class="list _bullet" id="rpjeer_49"><li class="list__item" id="rpjeer_61"><p><b id="rpjeer_64">Project :</b> Maven, <b id="rpjeer_65">Language :</b> Java, <b id="rpjeer_66">Spring Boot :</b> 3.2.x, <b id="rpjeer_67">Java :</b> 17</p></li><li class="list__item" id="rpjeer_62"><p><b id="rpjeer_68">Metadata :</b></p><ul class="list _bullet" id="rpjeer_69"><li class="list__item" id="rpjeer_70"><p><b id="rpjeer_73">Group :</b> <code class="code" id="rpjeer_74">fr.formation.spring</code></p></li><li class="list__item" id="rpjeer_71"><p><b id="rpjeer_75">Artifact :</b> <code class="code" id="rpjeer_76">notification-service</code></p></li><li class="list__item" id="rpjeer_72"><p><b id="rpjeer_77">Package name :</b> <code class="code" id="rpjeer_78">fr.formation.spring.notificationservice</code></p></li></ul></li><li class="list__item" id="rpjeer_63"><p><b id="rpjeer_79">Dependencies :</b></p><ul class="list _bullet" id="rpjeer_80"><li class="list__item" id="rpjeer_81"><p><code class="code" id="rpjeer_83">RabbitMQ</code> (Spring for RabbitMQ)</p></li><li class="list__item" id="rpjeer_82"><p><code class="code" id="rpjeer_84">Lombok</code></p></li></ul></li></ul><p id="rpjeer_50">G&eacute;n&eacute;rez et ouvrez le projet. Notez qu'on n'a pas besoin de `Spring Web` car ce service n'expose pas d'API REST.</p><p id="rpjeer_51"><b id="rpjeer_85">2.2. Configuration de la connexion RabbitMQ</b></p><p id="rpjeer_52">Dans <code class="code" id="rpjeer_86">src/main/resources/application.properties</code>, configurez la connexion :</p><div class="code-block" data-lang="properties">
+spring.application.name=notification-service
+
+# Par défaut, Spring Boot essaie de se connecter à 'localhost:5672'
+
+# ce qui fonctionnera quand on le lancera depuis l'IDE.
+
+# Pour Docker Compose, ces valeurs seraient surchargées.
+
+spring.rabbitmq.host=localhost
+spring.rabbitmq.port=5672
+spring.rabbitmq.username=guest
+spring.rabbitmq.password=guest
+
+</div><p id="rpjeer_54"><b id="rpjeer_87">2.3. Cr&eacute;ation du Listener</b></p><p id="rpjeer_55">C'est ici que nous allons &eacute;couter les messages. Cr&eacute;ez une classe `NotificationListener`.</p><div class="code-block" data-lang="java">
+// package fr.formation.spring.notificationservice.listener;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.stereotype.Component;
+
+@Component
+public class NotificationListener {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(
+        NotificationListener.class
+    );
+
+    // L'annotation @RabbitListener fait tout le travail.
+    // Elle déclare un consommateur pour la queue nommée 'orders.v1.notification'.
+    // Spring AMQP créera automatiquement la queue si elle n'existe pas.
+    @RabbitListener(queues = &quot;orders.v1.notification&quot;)
+    public void handleOrderNotification(String message) {
+        LOGGER.info(&quot;Received message: {}&quot;, message);
+        LOGGER.info(&quot;--&gt; Simulating sending confirmation email...&quot;);
+        // Ici, on mettrait la logique pour envoyer un vrai email.
+        LOGGER.info(&quot;--&gt; Email sent successfully!&quot;);
+    }
+}
+</div><p id="rpjeer_57"><b id="rpjeer_88">2.4. Dockerisation</b></p><p id="rpjeer_58">Cr&eacute;ez le <code class="code" id="rpjeer_89">Dockerfile</code> et construisez l'image `notification-service:latest` comme pour les autres services.</p><ol class="list _decimal"></ol></section></section><section class="chapter"><h2 id="tape-3-modification-de-order-service-le-producteur" data-toc="tape-3-modification-de-order-service-le-producteur">&Eacute;tape 3 : Modification de <code class="code" id="rpjeer_93">order-service</code> (le Producteur)</h2><p id="rpjeer_91">Maintenant, modifions l' <code class="code" id="rpjeer_94">order-service</code> pour qu'il publie le message.</p><section class="procedure-steps" id="rpjeer_92"><p id="rpjeer_95"><b id="rpjeer_111">3.1. Ajouter la d&eacute;pendance RabbitMQ</b></p><p id="rpjeer_96">Dans le <code class="code" id="rpjeer_112">pom.xml</code> de <code class="code" id="rpjeer_113">order-service</code>, ajoutez :</p><p> ```xml </p><p> ``` </p><p id="rpjeer_98"><b id="rpjeer_116">3.2. Configurer la connexion</b></p><p id="rpjeer_99">Dans le d&eacute;p&ocirc;t <code class="code" id="rpjeer_117">gestbook-config-repo</code>, ouvrez <code class="code" id="rpjeer_118">order-service.properties</code> et ajoutez la configuration RabbitMQ. Elle est identique &agrave; celle du `notification-service`.</p><div class="code-block" data-lang="properties">
+# Dans gestbook-config-repo/order-service.properties
+spring.rabbitmq.host=rabbitmq
+spring.rabbitmq.port=5672
+spring.rabbitmq.username=guest
+spring.rabbitmq.password=guest
+</div><p id="rpjeer_101">Notez qu'on utilise le nom de service `rabbitmq` car cet service s'ex&eacute;cute dans Docker Compose.</p><p id="rpjeer_102"><b id="rpjeer_119">3.3. D&eacute;finir l'Exchange et le Binding</b></p><p id="rpjeer_103">C'est une bonne pratique de d&eacute;clarer les composants RabbitMQ (exchanges, queues, bindings) dans la configuration Java. Spring s'assurera qu'ils existent au d&eacute;marrage.</p><p id="rpjeer_104">Dans `order-service`, cr&eacute;ez un package <code class="code" id="rpjeer_120">config</code> et ajoutez la classe <code class="code" id="rpjeer_121">RabbitMQConfig</code>.</p><div class="code-block" data-lang="java">
+// package fr.formation.spring.orderservice.config;
+
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.BindingBuilder;
+import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.TopicExchange;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class RabbitMQConfig {
+
+    public static final String EXCHANGE_NAME = &quot;orders.v1.events&quot;;
+    public static final String QUEUE_NAME = &quot;orders.v1.notification&quot;;
+    public static final String ROUTING_KEY = &quot;order.created&quot;;
+
+    @Bean
+    public TopicExchange ordersExchange() {
+        return new TopicExchange(EXCHANGE_NAME);
+    }
+
+    @Bean
+    public Queue notificationQueue() {
+        return new Queue(QUEUE_NAME);
+    }
+
+    @Bean
+    public Binding notificationBinding(Queue notificationQueue,
+                                       TopicExchange ordersExchange) {
+        // Lie la queue à l'exchange pour une clé de routage spécifique
+        return BindingBuilder.bind(notificationQueue)
+                             .to(ordersExchange)
+                             .with(ROUTING_KEY);
+    }
+
+}
+
+</div><p id="rpjeer_106"><b id="rpjeer_122">3.4. Publier le message</b></p><p id="rpjeer_107">Modifiez le `OrderController` pour qu'il envoie un message apr&egrave;s avoir sauvegard&eacute; la commande.</p><div class="code-block" data-lang="java">
+// Dans OrderController.java de order-service
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
+// ...
+
+@RestController
+@RequestMapping(&quot;/api/orders&quot;)
+public class OrderController {
+    // ... (autres injections)
+    private final RabbitTemplate rabbitTemplate;
+
+    public OrderController(OrderRepository orderRepository,
+                           ProductServiceClient productServiceClient,
+                           RabbitTemplate rabbitTemplate) { // Injecter RabbitTemplate
+        this.orderRepository = orderRepository;
+        this.productServiceClient = productServiceClient;
+        this.rabbitTemplate = rabbitTemplate;
+    }
+
+    @PostMapping
+    public ResponseEntity&lt;?&gt; createOrder(@RequestBody OrderRequest request) {
+        // ... (logique existante pour appeler product-service et créer la commande)
+        
+        Order savedOrder = orderRepository.save(order);
+
+        // === NOUVELLE PARTIE : PUBLICATION DU MESSAGE ===
+        String message = &quot;Order &quot; + savedOrder.getId() + &quot; has been created.&quot;;
+        
+        // On envoie le message à notre exchange avec la bonne clé de routage
+        rabbitTemplate.convertAndSend(
+            RabbitMQConfig.EXCHANGE_NAME,
+            RabbitMQConfig.ROUTING_KEY,
+            message
+        );
+        // ===============================================
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedOrder);
+    }
+    // ...
+}
+</div><p id="rpjeer_109"><b id="rpjeer_123">3.5. Reconstruire l'image Docker</b></p><p id="rpjeer_110">N'oubliez pas de reconstruire l'image de `order-service`.</p><ol class="list _decimal"></ol></section></section><section class="chapter"><h2 id="tape-4-lancement-et-validation" data-toc="tape-4-lancement-et-validation">&Eacute;tape 4 : Lancement et Validation</h2><section class="procedure-steps" id="rpjeer_124"><p id="rpjeer_126">1. Ajoutez le `notification-service` et ses d&eacute;pendances &agrave; `rabbitmq` dans votre `docker-compose.yml`.</p><p id="rpjeer_127">2. Lancez tout l'&eacute;cosyst&egrave;me avec <code class="code" id="rpjeer_133">docker-compose up</code>.</p><p id="rpjeer_128">3. **Sc&eacute;nario 1 : Tout fonctionne**</p><ul class="list _bullet" id="rpjeer_129"><li class="list__item" id="rpjeer_134"><p>Faites un appel `POST /api/orders` via la Gateway.</p></li><li class="list__item" id="rpjeer_135"><p>La requ&ecirc;te doit r&eacute;ussir et retourner `201 Created`.</p></li><li class="list__item" id="rpjeer_136"><p>Observez les logs des conteneurs. Vous devriez voir dans les logs du <b id="rpjeer_137"><code class="code" id="rpjeer_138">notification-service</code></b> un message indiquant qu'il a re&ccedil;u le message et simul&eacute; l'envoi d'un email.</p></li></ul><p id="rpjeer_130">4. **Sc&eacute;nario 2 : Test de r&eacute;silience**</p><ul class="list _bullet" id="rpjeer_131"><li class="list__item" id="rpjeer_139"><p>Arr&ecirc;tez UNIQUEMENT le conteneur du `notification-service` : </p></li><li class="list__item" id="rpjeer_140"><p>Faites un nouvel appel `POST /api/orders` via la Gateway.</p></li><li class="list__item" id="rpjeer_141"><p>La requ&ecirc;te doit <b id="rpjeer_146">r&eacute;ussir exactement comme avant</b>! L'`order-service` n'est absolument pas affect&eacute; par la panne du service de notification.</p></li><li class="list__item" id="rpjeer_142"><p>Allez sur l'interface de management de RabbitMQ (<a href="http://localhost:15672/" id="rpjeer_147" data-external="true" rel="noopener noreferrer" target="_blank">http://localhost:15672/</a>), allez dans l'onglet &quot;Queues&quot;. Vous verrez que la queue <code class="code" id="rpjeer_148">orders.v1.notification</code> a maintenant 1 message &quot;Ready&quot; et 0 &quot;Consumers&quot;. Le message est stock&eacute; en toute s&eacute;curit&eacute;.</p></li><li class="list__item" id="rpjeer_143"><p>Red&eacute;marrez le `notification-service` : </p></li><li class="list__item" id="rpjeer_144"><p>Observez &agrave; nouveau les logs du `notification-service`. D&egrave;s son d&eacute;marrage, il va se connecter &agrave; RabbitMQ et consommer le message qui &eacute;tait en attente.</p></li></ul><p id="rpjeer_132">Vous venez de prouver le d&eacute;couplage et la r&eacute;silience apport&eacute;s par la communication asynchrone.</p><ol class="list _decimal"></ol></section></section><section class="chapter"><h2 id="exercice-16-envoyer-un-objet-complexe" data-toc="exercice-16-envoyer-un-objet-complexe">Exercice 16 : Envoyer un objet complexe</h2><p id="rpjeer_150"><span class="control" id="rpjeer_155">Contexte :</span> Envoyer une simple cha&icirc;ne de caract&egrave;res, c'est bien, mais en g&eacute;n&eacute;ral, on veut envoyer des donn&eacute;es structur&eacute;es.</p><p id="rpjeer_151"><span class="control" id="rpjeer_156">Votre mission :</span></p><ol class="list _decimal" id="rpjeer_152" type="1"><li class="list__item" id="rpjeer_157"><p id="rpjeer_162">Cr&eacute;ez une classe DTO (Data Transfer Object) <code class="code" id="rpjeer_163">OrderCreatedEvent</code> dans un projet partag&eacute; ou dans les deux services (<code class="code" id="rpjeer_164">order-service</code> et <code class="code" id="rpjeer_165">notification-service</code>). Elle pourrait contenir <code class="code" id="rpjeer_166">orderId</code>, <code class="code" id="rpjeer_167">orderDate</code>, <code class="code" id="rpjeer_168">customerEmail</code>.</p></li><li class="list__item" id="rpjeer_158"><p id="rpjeer_169">Modifiez l' <code class="code" id="rpjeer_170">order-service</code> pour qu'il envoie une instance de cet objet au lieu d'une cha&icirc;ne.</p></li><li class="list__item" id="rpjeer_159"><p id="rpjeer_171">Spring AMQP utilise par d&eacute;faut un convertisseur Java. Pour que cela fonctionne, le DTO doit impl&eacute;menter <code class="code" id="rpjeer_172">java.io.Serializable</code>.</p></li><li class="list__item" id="rpjeer_160"><p id="rpjeer_173">Modifiez le <code class="code" id="rpjeer_174">NotificationListener</code> pour qu'il s'attende &agrave; recevoir un objet <code class="code" id="rpjeer_175">OrderCreatedEvent</code> en param&egrave;tre de sa m&eacute;thode <code class="code" id="rpjeer_176">handleOrderNotification</code>.</p></li><li class="list__item" id="rpjeer_161"><p id="rpjeer_177">Relancez et testez.</p></li></ol><p id="rpjeer_153"><span class="control" id="rpjeer_178">Bonus :</span> En production, on pr&eacute;f&egrave;re un format interop&eacute;rable comme JSON. Configurez Spring AMQP pour qu'il utilise un <code class="code" id="rpjeer_179">Jackson2JsonMessageConverter</code> afin de s&eacute;rialiser/d&eacute;s&eacute;rialiser automatiquement les objets en JSON.</p><section class="chapter"><div class="collapse"><div class="collapse__title"><h3 id="correction-exercice-16" data-toc="correction-exercice-16">Correction exercice 16</h3></div><div class="collapse__content"><ol class="list _decimal" id="rpjeer_180" type="1"><li class="list__item" id="rpjeer_191"><p id="rpjeer_192"><span class="control" id="rpjeer_193">Cr&eacute;ation du DTO</span>:</p></li></ol><div class="code-block" data-lang="java">
+   // Dans un package 'events' ou 'dto'
+   import java.io.Serializable;
+   import java.time.LocalDate;
+
+   public class OrderCreatedEvent implements Serializable {
+       private Long orderId;
+       private LocalDate orderDate;
+       // Constructeurs, getters, setters...
+   }
+</div><ol class="list _decimal" id="rpjeer_182" type="1" start="2"><li class="list__item" id="rpjeer_194"><p id="rpjeer_195"><span class="control" id="rpjeer_196">Modification du Producteur (<code class="code" id="rpjeer_197">OrderController</code>)</span>:</p></li></ol><div class="code-block" data-lang="java">
+   // ...
+   OrderCreatedEvent event = new OrderCreatedEvent(
+       savedOrder.getId(),
+       savedOrder.getOrderDate()
+   );
+   rabbitTemplate.convertAndSend(
+       RabbitMQConfig.EXCHANGE_NAME,
+       RabbitMQConfig.ROUTING_KEY,
+       event // On envoie l'objet directement
+   );
+   // ...
+</div><ol class="list _decimal" id="rpjeer_184" type="1" start="3"><li class="list__item" id="rpjeer_198"><p id="rpjeer_199"><span class="control" id="rpjeer_200">Modification du Consommateur (<code class="code" id="rpjeer_201">NotificationListener</code>)</span>:</p></li></ol><div class="code-block" data-lang="java">
+@RabbitListener(queues = &quot;orders.v1.notification&quot;)
+public void handleOrderNotification(OrderCreatedEvent event) { // On type le paramètre
+    LOGGER.info(
+        &quot;Received order creation event for orderId: {}&quot;,
+         event.getOrderId()
+    );
+    // ...
+}
+</div><p id="rpjeer_186">Avec ces changements, Spring AMQP va s&eacute;rialiser l'objet c&ocirc;t&eacute; producteur et le d&eacute;s&eacute;rialiser c&ocirc;t&eacute; consommateur.</p><p id="rpjeer_187"><span class="control" id="rpjeer_202">Correction Bonus (JSON)</span>: Pour utiliser JSON, il faut d&eacute;finir un bean <code class="code" id="rpjeer_203">MessageConverter</code> dans une classe de configuration (c&ocirc;t&eacute; producteur ET consommateur).</p><div class="code-block" data-lang="java">
+   @Configuration
+   public class AmqpJsonConfig {
+       @Bean
+       public MessageConverter jsonMessageConverter() {
+           return new Jackson2JsonMessageConverter();
+       }
+   }
+</div><p id="rpjeer_189">Avec ce bean, Spring AMQP utilisera JSON par d&eacute;faut. Le DTO n'a plus besoin d'impl&eacute;menter <code class="code" id="rpjeer_204">Serializable</code>. C'est l' approche recommand&eacute;e en production.</p></div></div></section></section><section class="chapter"><h2 id="auto-valuation" data-toc="auto-valuation">Auto-&eacute;valuation</h2><ol class="list _decimal" id="rpjeer_205" type="1"><li class="list__item" id="rpjeer_207"><p id="rpjeer_212"><span class="control" id="rpjeer_213">(Question ouverte)</span> Quel est le principal avantage de la communication asynchrone illustr&eacute; par le sc&eacute;nario du <code class="code" id="rpjeer_214">notification-service</code> en panne ?</p></li><li class="list__item" id="rpjeer_208"><p id="rpjeer_215"><span class="control" id="rpjeer_217">(QCM)</span> Quelle annotation Spring est utilis&eacute;e pour d&eacute;clarer une m&eacute;thode comme &eacute;tant un consommateur de messages d'une file RabbitMQ ?</p><ul class="list _bullet" id="rpjeer_216"><li class="list__item" id="rpjeer_218"><p id="rpjeer_222">A) <code class="code" id="rpjeer_223">@AmqpListener</code></p></li><li class="list__item" id="rpjeer_219"><p id="rpjeer_224">B) <code class="code" id="rpjeer_225">@MessageConsumer</code></p></li><li class="list__item" id="rpjeer_220"><p id="rpjeer_226">C) <code class="code" id="rpjeer_227">@RabbitListener</code></p></li><li class="list__item" id="rpjeer_221"><p id="rpjeer_228">D) <code class="code" id="rpjeer_229">@Consume</code></p></li></ul></li><li class="list__item" id="rpjeer_209"><p id="rpjeer_230"><span class="control" id="rpjeer_232">(QCM)</span> Dans RabbitMQ, le <code class="code" id="rpjeer_233">RabbitTemplate</code> est utilis&eacute; pour :</p><ul class="list _bullet" id="rpjeer_231"><li class="list__item" id="rpjeer_234"><p id="rpjeer_238">A) &Eacute;couter une file d'attente.</p></li><li class="list__item" id="rpjeer_235"><p id="rpjeer_239">B) Cr&eacute;er des files d'attente dynamiquement.</p></li><li class="list__item" id="rpjeer_236"><p id="rpjeer_240">C) Envoyer des messages.</p></li><li class="list__item" id="rpjeer_237"><p id="rpjeer_241">D) G&eacute;rer la connexion au broker.</p></li></ul></li><li class="list__item" id="rpjeer_210"><p id="rpjeer_242"><span class="control" id="rpjeer_243">(Question ouverte)</span> Si 5 instances du <code class="code" id="rpjeer_244">notification-service</code> sont lanc&eacute;es et &eacute;coutent la m&ecirc;me queue, que se passe-t-il lorsqu'un seul message est envoy&eacute; dans cette queue ?</p></li><li class="list__item" id="rpjeer_211"><p id="rpjeer_245"><span class="control" id="rpjeer_247">(QCM)</span> Quelle technologie est g&eacute;n&eacute;ralement consid&eacute;r&eacute;e comme plus adapt&eacute;e pour des messages de type &quot;commande&quot; avec des r&egrave;gles de routage complexes ?</p><ul class="list _bullet" id="rpjeer_246"><li class="list__item" id="rpjeer_248"><p id="rpjeer_252">A) Kafka</p></li><li class="list__item" id="rpjeer_249"><p id="rpjeer_253">B) RabbitMQ</p></li><li class="list__item" id="rpjeer_250"><p id="rpjeer_254">C) REST</p></li><li class="list__item" id="rpjeer_251"><p id="rpjeer_255">D) Zipkin</p></li></ul></li></ol></section><section class="chapter"><h2 id="conclusion" data-toc="conclusion">Conclusion</h2><p id="rpjeer_256">Vous avez brillamment mis en &oelig;uvre un pattern de communication asynchrone, ajoutant une nouvelle dimension de r&eacute;silience et de flexibilit&eacute; &agrave; votre architecture.</p><p id="rpjeer_257">Vous avez appris &agrave; :</p><ul class="list _bullet" id="rpjeer_258"><li class="list__item" id="rpjeer_260"><p id="rpjeer_263">Utiliser <span class="control" id="rpjeer_264">RabbitMQ</span> comme un interm&eacute;diaire fiable pour d&eacute;coupler vos services.</p></li><li class="list__item" id="rpjeer_261"><p id="rpjeer_265">Impl&eacute;menter le pattern <span class="control" id="rpjeer_266">Producteur/Consommateur</span> avec Spring AMQP.</p></li><li class="list__item" id="rpjeer_262"><p id="rpjeer_267">Constater par vous-m&ecirc;me comment ce d&eacute;couplage permet &agrave; votre syst&egrave;me de continuer &agrave; fonctionner m&ecirc;me en cas de panne d'un service non critique.</p></li></ul><p id="rpjeer_259">Vous ma&icirc;trisez maintenant les deux principaux modes de communication des microservices. La derni&egrave;re &eacute;tape de notre formation consistera &agrave; explorer les strat&eacute;gies de test adapt&eacute;es &agrave; ce type d'architecture complexe.</p></section><div class="last-modified">17 juillet 2025</div><div data-feedback-placeholder="true"></div><div class="navigation-links _bottom"><a href="013-00-async-communication.html" class="navigation-links__prev">Module 13 : Communication Asynchrone (RabbitMQ / Kafka) - Le D&eacute;couplage Ultime</a><a href="014-00-test.html" class="navigation-links__next">Module 14 : Strat&eacute;gies de Test pour les Microservices - Comment garantir la qualit&eacute; ?</a></div></article><div id="disqus_thread"></div></div></section></main></div><script src="https://resources.jetbrains.com/writerside/apidoc/6.22.0-b776/app.js"></script></body></html>

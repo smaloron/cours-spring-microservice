@@ -1,0 +1,210 @@
+<!DOCTYPE html SYSTEM "about:legacy-compat">
+<html lang="en-US" data-preset="contrast" data-primary-color="#307FFF"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><meta charset="UTF-8"><meta name="robots" content="noindex"><meta name="built-on" content="2025-07-27T21:24:57.216448"><title>TP 5 : Un seul pour les gouverner tous - Mise en place de la Configuration Centralis&eacute;e | Spring Micro Services</title><script type="application/json" id="virtual-toc-data">[{"id":"objectifs-p-dagogiques","level":0,"title":"Objectifs Pédagogiques","anchor":"#objectifs-p-dagogiques"},{"id":"introduction-le-grand-d-m-nagement-de-la-configuration","level":0,"title":"Introduction : Le grand déménagement de la configuration","anchor":"#introduction-le-grand-d-m-nagement-de-la-configuration"},{"id":"tape-1-cr-ation-du-d-p-t-git-de-configuration","level":0,"title":"Étape 1 : Création du dépôt Git de configuration","anchor":"#tape-1-cr-ation-du-d-p-t-git-de-configuration"},{"id":"tape-2-cr-ation-du-spring-cloud-config-server","level":0,"title":"Étape 2 : Création du Spring Cloud Config Server","anchor":"#tape-2-cr-ation-du-spring-cloud-config-server"},{"id":"tape-4-dockerisation-du-config-server","level":0,"title":"Étape 4 : Dockerisation du Config Server","anchor":"#tape-4-dockerisation-du-config-server"},{"id":"exercice-8-mettre-jour-la-configuration-chaud","level":0,"title":"Exercice 8 : Mettre à jour la configuration à chaud","anchor":"#exercice-8-mettre-jour-la-configuration-chaud"},{"id":"auto-valuation","level":0,"title":"Auto-évaluation","anchor":"#auto-valuation"},{"id":"conclusion","level":0,"title":"Conclusion","anchor":"#conclusion"}]</script><script type="application/json" id="topic-shortcuts"></script><link href="https://resources.jetbrains.com/writerside/apidoc/6.22.0-b776/app.css" rel="stylesheet"><meta name="msapplication-TileColor" content="#000000"><link rel="apple-touch-icon" sizes="180x180" href="https://jetbrains.com/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="https://jetbrains.com/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="https://jetbrains.com/favicon-16x16.png"><meta name="msapplication-TileImage" content="https://resources.jetbrains.com/storage/ui/favicons/mstile-144x144.png"><meta name="msapplication-square70x70logo" content="https://resources.jetbrains.com/storage/ui/favicons/mstile-70x70.png"><meta name="msapplication-square150x150logo" content="https://resources.jetbrains.com/storage/ui/favicons/mstile-150x150.png"><meta name="msapplication-wide310x150logo" content="https://resources.jetbrains.com/storage/ui/favicons/mstile-310x150.png"><meta name="msapplication-square310x310logo" content="https://resources.jetbrains.com/storage/ui/favicons/mstile-310x310.png"><meta name="image" content=""><!-- Open Graph --><meta property="og:title" content="TP 5 : Un seul pour les gouverner tous - Mise en place de la Configuration Centralis&eacute;e | Spring Micro Services"><meta property="og:description" content=""><meta property="og:image" content=""><meta property="og:site_name" content="Spring Micro Services Help"><meta property="og:type" content="website"><meta property="og:locale" content="en_US"><meta property="og:url" content="writerside-documentation/005-01-tp-5.html"><!-- End Open Graph --><!-- Twitter Card --><meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content=""><meta name="twitter:title" content="TP 5 : Un seul pour les gouverner tous - Mise en place de la Configuration Centralis&eacute;e | Spring Micro Services"><meta name="twitter:description" content=""><meta name="twitter:creator" content=""><meta name="twitter:image:src" content=""><!-- End Twitter Card --><!-- Schema.org WebPage --><script type="application/ld+json">{
+    "@context": "http://schema.org",
+    "@type": "WebPage",
+    "@id": "writerside-documentation/005-01-tp-5.html#webpage",
+    "url": "writerside-documentation/005-01-tp-5.html",
+    "name": "TP 5 : Un seul pour les gouverner tous - Mise en place de la Configuration Centralis&eacute;e | Spring Micro Services",
+    "description": "",
+    "image": "",
+    "inLanguage":"en-US"
+}</script><!-- End Schema.org --><!-- Schema.org WebSite --><script type="application/ld+json">{
+    "@type": "WebSite",
+    "@id": "writerside-documentation/#website",
+    "url": "writerside-documentation/",
+    "name": "Spring Micro Services Help"
+}</script><!-- End Schema.org --></head><body data-id="005-01-TP-5" data-main-title="TP 5 : Un seul pour les gouverner tous - Mise en place de la Configuration Centralisée" data-article-props="{&quot;seeAlsoStyle&quot;:&quot;links&quot;}" data-template="article" data-breadcrumbs="005-00-centralized-configuration.md|Module 5 : La Configuration Centralisée (L'essentiel)"><div class="wrapper"><main class="panel _main"><header class="panel__header"><div class="container"><h3>Spring Micro Services  Help</h3><div class="panel-trigger"></div></div></header><section class="panel__content"><div class="container"><article class="article" data-shortcut-switcher="inactive"><h1 data-toc="005-01-TP-5" id="005-01-TP-5.md">TP 5 : Un seul pour les gouverner tous - Mise en place de la Configuration Centralisée</h1><section class="chapter"><h2 id="objectifs-p-dagogiques" data-toc="objectifs-p-dagogiques">Objectifs P&eacute;dagogiques</h2><p id="gw3lnh_11">&Agrave; la fin de ce TP, vous serez capable de :</p><ul class="list _bullet" id="gw3lnh_12"><li class="list__item" id="gw3lnh_13"><p id="gw3lnh_19">Cr&eacute;er et structurer un d&eacute;p&ocirc;t Git pour h&eacute;berger la configuration.</p></li><li class="list__item" id="gw3lnh_14"><p id="gw3lnh_20">Cr&eacute;er et configurer un projet Spring Cloud Config Server.</p></li><li class="list__item" id="gw3lnh_15"><p id="gw3lnh_21">Lier le Config Server au d&eacute;p&ocirc;t Git.</p></li><li class="list__item" id="gw3lnh_16"><p id="gw3lnh_22">Modifier les microservices existants pour qu'ils deviennent des clients du Config Server.</p></li><li class="list__item" id="gw3lnh_17"><p id="gw3lnh_23">Valider que la configuration est bien servie depuis une source externe.</p></li><li class="list__item" id="gw3lnh_18"><p id="gw3lnh_24">Dockeriser le Config Server.</p></li></ul></section><section class="chapter"><h2 id="introduction-le-grand-d-m-nagement-de-la-configuration" data-toc="introduction-le-grand-d-m-nagement-de-la-configuration">Introduction : Le grand d&eacute;m&eacute;nagement de la configuration</h2><p id="gw3lnh_25">Nos services <code class="code" id="gw3lnh_29">product-service</code> et <code class="code" id="gw3lnh_30">order-service</code> ont chacun leur propre fichier <code class="code" id="gw3lnh_31">application.properties</code>, leur petit &quot; Post-it&quot; personnel. Nous avons vu que c'&eacute;tait ing&eacute;rable &agrave; grande &eacute;chelle. Aujourd'hui, nous allons faire le grand m&eacute;nage. Nous allons cr&eacute;er notre &quot;panneau d'affichage central&quot; (le d&eacute;p&ocirc;t Git), construire le service qui le g&egrave;re (le Config Server), puis apprendre &agrave; nos services &agrave; venir y lire leurs instructions au lieu de se fier &agrave; leurs notes locales.</p><p id="gw3lnh_26">Ce TP est structur&eacute; en trois grandes parties :</p><ol class="list _decimal" id="gw3lnh_27" type="1"><li class="list__item" id="gw3lnh_32"><p id="gw3lnh_35"><span class="control" id="gw3lnh_36">Cr&eacute;ation de la source de v&eacute;rit&eacute; :</span> Le d&eacute;p&ocirc;t Git.</p></li><li class="list__item" id="gw3lnh_33"><p id="gw3lnh_37"><span class="control" id="gw3lnh_38">Cr&eacute;ation du fournisseur :</span> Le Config Server.</p></li><li class="list__item" id="gw3lnh_34"><p id="gw3lnh_39"><span class="control" id="gw3lnh_40">Mise &agrave; jour des consommateurs :</span> Nos microservices.</p></li></ol><p id="gw3lnh_28">&Agrave; la fin, l'URL d'Eureka ne sera plus &eacute;crite dans les fichiers <code class="code" id="gw3lnh_41">properties</code> de nos services, mais sera r&eacute;cup&eacute;r&eacute;e dynamiquement depuis un emplacement central. C'est un pas de g&eacute;ant vers une architecture propre et maintenable.</p></section><section class="chapter"><h2 id="tape-1-cr-ation-du-d-p-t-git-de-configuration" data-toc="tape-1-cr-ation-du-d-p-t-git-de-configuration">&Eacute;tape 1 : Cr&eacute;ation du d&eacute;p&ocirc;t Git de configuration</h2><section class="procedure-steps" id="gw3lnh_42"><p id="gw3lnh_43"><b id="gw3lnh_63">Option A : Utiliser un d&eacute;p&ocirc;t local (plus simple pour ce TP)</b></p><p id="gw3lnh_44">1. Sur votre machine, cr&eacute;ez un nouveau dossier, par exemple <code class="code" id="gw3lnh_64">gestbook-config-repo</code>.</p><p id="gw3lnh_45">2. Ouvrez un terminal &agrave; l'int&eacute;rieur de ce dossier et initialisez un d&eacute;p&ocirc;t Git :</p><p id="gw3lnh_47">3. Dans ce dossier, cr&eacute;ez les fichiers de configuration suivants :</p><p id="gw3lnh_48"><b id="gw3lnh_65"><code class="code" id="gw3lnh_66">application.properties</code></b></p><p id="gw3lnh_49">Ce fichier contiendra les propri&eacute;t&eacute;s communes &agrave; tous nos services.</p><div class="code-block" data-lang="properties">
+# Propriété commune à tous les clients : l'adresse du serveur Eureka
+eureka.client.serviceUrl.defaultZone=http://eureka-server:8761/eureka
+
+# Permet de voir les beans chargés par la configuration distante
+
+management.endpoints.web.exposure.include=health,info,configprops
+
+</div><aside class="prompt" data-type="warning" data-title="" id="gw3lnh_51"><p><b id="gw3lnh_67">Nom d'h&ocirc;te `eureka-server`</b></p><p id="gw3lnh_68">Notez que nous utilisons le nom d'h&ocirc;te <code class="code" id="gw3lnh_69">eureka-server</code> et non plus <code class="code" id="gw3lnh_70">localhost</code>. C'est une anticipation pour quand nous utiliserons Docker Compose. Ce nom correspondra au nom du service dans le r&eacute;seau Docker.</p></aside><p id="gw3lnh_52"><b id="gw3lnh_71"><code class="code" id="gw3lnh_72">product-service.properties</code></b></p><p id="gw3lnh_53">Ce fichier contient les propri&eacute;t&eacute;s sp&eacute;cifiques au service produit.</p><div class="code-block" data-lang="properties">
+# Port spécifique à product-service
+server.port=8081
+
+# Configuration H2 spécifique à product-service
+spring.datasource.url=jdbc:h2:mem:productdb
+spring.h2.console.path=/h2-console
+</div><p id="gw3lnh_55"><b id="gw3lnh_73"><code class="code" id="gw3lnh_74">order-service.properties</code></b></p><p id="gw3lnh_56">Propri&eacute;t&eacute;s sp&eacute;cifiques au service commande.</p><div class="code-block" data-lang="properties">
+# Port spécifique à order-service
+server.port=8082
+
+# Configuration H2 spécifique à order-service
+
+spring.datasource.url=jdbc:h2:mem:orderdb
+spring.h2.console.path=/h2-console
+
+</div><p id="gw3lnh_58">4. &quot;Commitez&quot; ces fichiers dans votre d&eacute;p&ocirc;t Git local :</p><p id="gw3lnh_60">Notre source de v&eacute;rit&eacute; est pr&ecirc;te ! Notez bien le chemin d'acc&egrave;s complet &agrave; ce dossier (par exemple, <code class="code" id="gw3lnh_75">/Users/votre-nom/projets/gestbook-config-repo</code>), nous en aurons besoin.</p><p id="gw3lnh_61"><b id="gw3lnh_76">Option B : Utiliser un d&eacute;p&ocirc;t distant (GitHub/GitLab)</b></p><p id="gw3lnh_62">La proc&eacute;dure est similaire : cr&eacute;ez un nouveau d&eacute;p&ocirc;t (priv&eacute; de pr&eacute;f&eacute;rence, pour ne pas exposer de secrets) sur votre plateforme favorite, clonez-le, ajoutez les fichiers, commitez et pushez.</p><ol class="list _decimal"></ol></section></section><section class="chapter"><h2 id="tape-2-cr-ation-du-spring-cloud-config-server" data-toc="tape-2-cr-ation-du-spring-cloud-config-server">&Eacute;tape 2 : Cr&eacute;ation du Spring Cloud Config Server</h2><section class="procedure-steps" id="gw3lnh_77"><p id="gw3lnh_78"><b id="gw3lnh_100">2.1. Cr&eacute;ation du projet</b></p><p id="gw3lnh_79">Direction <a href="https://start.spring.io/" id="gw3lnh_101" data-external="true" rel="noopener noreferrer" target="_blank">start.spring.io</a>:</p><ul class="list _bullet" id="gw3lnh_80"><li class="list__item" id="gw3lnh_102"><p><b id="gw3lnh_105">Project :</b> Maven, <b id="gw3lnh_106">Language :</b> Java, <b id="gw3lnh_107">Spring Boot :</b> 3.2.x, <b id="gw3lnh_108">Java :</b> 17</p></li><li class="list__item" id="gw3lnh_103"><p><b id="gw3lnh_109">Metadata :</b></p><ul class="list _bullet" id="gw3lnh_110"><li class="list__item" id="gw3lnh_111"><p><b id="gw3lnh_114">Group :</b> <code class="code" id="gw3lnh_115">fr.formation.spring</code></p></li><li class="list__item" id="gw3lnh_112"><p><b id="gw3lnh_116">Artifact :</b> <code class="code" id="gw3lnh_117">config-server</code></p></li><li class="list__item" id="gw3lnh_113"><p><b id="gw3lnh_118">Package name :</b> <code class="code" id="gw3lnh_119">fr.formation.spring.configserver</code></p></li></ul></li><li class="list__item" id="gw3lnh_104"><p><b id="gw3lnh_120">Dependencies :</b></p><ul class="list _bullet" id="gw3lnh_121"><li class="list__item" id="gw3lnh_122"><p><code class="code" id="gw3lnh_124">Config Server</code> (dans la section Spring Cloud Configuration)</p></li><li class="list__item" id="gw3lnh_123"><p><code class="code" id="gw3lnh_125">Eureka Client</code> (le Config Server peut aussi &ecirc;tre un client Eureka !)</p></li></ul></li></ul><p id="gw3lnh_81">G&eacute;n&eacute;rez, t&eacute;l&eacute;chargez et ouvrez le projet.</p><p id="gw3lnh_82"><b id="gw3lnh_126">2.2. Activation et Configuration</b></p><p id="gw3lnh_83">Ouvrez la classe principale <code class="code" id="gw3lnh_127">ConfigServerApplication.java</code> et activez le r&ocirc;le de serveur :</p><div class="code-block" data-lang="java">
+// package fr.formation.spring.configserver;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.config.server.EnableConfigServer;
+
+@SpringBootApplication
+@EnableConfigServer // &lt;-- Active le rôle de Config Server
+public class ConfigServerApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(ConfigServerApplication.class, args);
+    }
+}
+</div><p id="gw3lnh_85">Maintenant, configurez-le dans <code class="code" id="gw3lnh_128">src/main/resources/application.properties</code>:</p><div class="code-block" data-lang="properties">
+# Nom et port du service
+spring.application.name=config-server
+# 8888 est le port standard par convention pour un Config Server
+server.port=8888
+
+# Configuration pour pointer vers notre dépôt Git
+
+spring.cloud.config.server.git.uri=file:///${user.home}/path/to/your/gestbook-config-repo
+
+# Le Config Server s'enregistre lui-même auprès d'Eureka
+
+# C'est une bonne pratique pour qu'il soit découvrable.
+
+eureka.client.serviceUrl.defaultZone=http://eureka-server:8761/eureka
+
+
+&lt;warning&gt;
+&lt;b&gt;Syntaxe de l'URI Git locale&lt;/b&gt;
+&lt;p&gt;
+Remplacez &lt;code&gt;/path/to/your/gestbook-config-repo&lt;/code&gt; par le chemin absolu de votre dépôt.
+&lt;/p&gt;
+&lt;ul&gt;
+    &lt;li&gt;Sur macOS/Linux : &lt;code&gt;file:///Users/votre-nom/projets/gestbook-config-repo&lt;/code&gt; (notez les &lt;b&gt;trois&lt;/b&gt; slashes).&lt;/li&gt;
+    &lt;li&gt;Sur Windows : &lt;code&gt;file:///C:/Users/votre-nom/projets/gestbook-config-repo&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;/warning&gt;
+
+&lt;p&gt;&lt;b&gt;2.3. Lancement et Validation&lt;/b&gt;&lt;/p&gt;
+&lt;p&gt;Lancez le &lt;code&gt;ConfigServerApplication&lt;/code&gt; depuis votre IDE. Une fois démarré, vous pouvez tester son API directement dans votre navigateur. L'API a une structure simple : &lt;code&gt;/{application-name}/{profile}&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Testez l'URL suivante : &lt;a href=&quot;http://localhost:8888/product-service/default&quot;&gt;http://localhost:8888/product-service/default&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Vous devriez recevoir une réponse JSON qui contient les propriétés combinées de &lt;code&gt;application.properties&lt;/code&gt; et &lt;code&gt;product-service.properties&lt;/code&gt; de votre dépôt Git !&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;json&quot;&gt;
+{
+  &quot;name&quot;: &quot;product-service&quot;,
+  &quot;profiles&quot;: [ &quot;default&quot; ],
+  &quot;label&quot;: null,
+  &quot;version&quot;: &quot;...&quot;,
+  &quot;state&quot;: null,
+  &quot;propertySources&quot;: [
+    {
+      &quot;name&quot;: &quot;file:///.../gestbook-config-repo/product-service.properties&quot;,
+      &quot;source&quot;: {
+        &quot;server.port&quot;: 8081,
+        &quot;spring.datasource.url&quot;: &quot;jdbc:h2:mem:productdb&quot;,
+        &quot;spring.h2.console.path&quot;: &quot;/h2-console&quot;
+      }
+    },
+    {
+      &quot;name&quot;: &quot;file:///.../gestbook-config-repo/application.properties&quot;,
+      &quot;source&quot;: {
+        &quot;eureka.client.serviceUrl.defaultZone&quot;: &quot;http://eureka-server:8761/eureka&quot;,
+        ...
+      }
+    }
+  ]
+}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Notre Config Server fonctionne !&lt;/p&gt;
+&lt;/procedure&gt;
+
+### Étape 3 : Migration de `product-service` et `order-service`
+
+Il est temps d'apprendre à nos services à utiliser notre nouveau serveur. La procédure est la même pour les deux. Nous allons la détailler pour `product-service`.
+
+&lt;procedure&gt;
+&lt;p&gt;Ouvrez le projet &lt;code&gt;product-service&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;b&gt;3.1. Ajout des dépendances&lt;/b&gt;&lt;/p&gt;
+&lt;p&gt;Dans le &lt;code&gt;pom.xml&lt;/code&gt;, ajoutez les dépendances pour le client de configuration et pour le bootstrap.&lt;/p&gt;
+```xml
+&lt;!-- Dans product-service/pom.xml --&gt;
+&lt;dependencies&gt;
+    &lt;!-- ... (dépendances existantes) ... --&gt;
+
+    &lt;!-- Permet de parler au Config Server --&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-cloud-starter-config&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+
+    &lt;!-- Active la lecture du fichier bootstrap.properties --&gt;
+    &lt;dependency&gt;
+        &lt;groupId&gt;org.springframework.cloud&lt;/groupId&gt;
+        &lt;artifactId&gt;spring-cloud-starter-bootstrap&lt;/artifactId&gt;
+    &lt;/dependency&gt;
+&lt;/dependencies&gt;
+</div><p id="gw3lnh_87">N'oubliez pas de recharger les d&eacute;pendances Maven.</p><p id="gw3lnh_88"><b id="gw3lnh_129">3.2. Cr&eacute;ation du `bootstrap.properties`</b></p><p id="gw3lnh_89">Dans <code class="code" id="gw3lnh_130">src/main/resources</code>, cr&eacute;ez un nouveau fichier nomm&eacute; <code class="code" id="gw3lnh_131">bootstrap.properties</code>.</p><div class="code-block" data-lang="properties">
+# Ce fichier est lu avant application.properties
+# Il contient le strict minimum pour contacter le Config Server
+
+# Nom de notre application. C'est ce nom que le client enverra au
+
+# Config Server pour demander sa configuration.
+
+spring.application.name=product-service
+
+# Adresse du Config Server
+
+# Ici on peut utiliser localhost car c'est au moment du build/test local.
+
+# En Docker, cette valeur sera surchargée.
+
+spring.cloud.config.uri=http://localhost:8888
+
+# On peut aussi configurer le client Eureka ici,
+
+# car il est nécessaire au tout début du démarrage.
+
+spring.cloud.config.discovery.enabled=true
+spring.cloud.config.discovery.service-id=config-server
+
+</div><p id="gw3lnh_91"><b id="gw3lnh_132">3.3. Nettoyage de `application.properties`</b></p><p id="gw3lnh_92">Maintenant, nous pouvons supprimer toutes les propri&eacute;t&eacute;s qui sont g&eacute;r&eacute;es par le Config Server de notre fichier local <code class="code" id="gw3lnh_133">application.properties</code>.</p><p id="gw3lnh_93">Le fichier <code class="code" id="gw3lnh_134">application.properties</code> de <code class="code" id="gw3lnh_135">product-service</code> peut devenir presque vide, ou ne contenir que des propri&eacute;t&eacute;s sp&eacute;cifiques au d&eacute;veloppement local.</p><div class="code-block" data-lang="properties">
+# Ce fichier est maintenant beaucoup plus léger !
+# On peut y mettre des surcharges locales si besoin.
+# Par exemple, pour les tests, on pourrait vouloir un niveau de log différent.
+# logging.level.fr.formation.spring=DEBUG
+</div><p id="gw3lnh_95"><b id="gw3lnh_136">3.4. R&eacute;p&eacute;tez pour `order-service`</b></p><p id="gw3lnh_96">Faites exactement la m&ecirc;me chose pour le projet <code class="code" id="gw3lnh_137">order-service</code>:</p><ol class="list _decimal" id="gw3lnh_97" type="1"><li class="list__item" id="gw3lnh_138"><p>Ajoutez les d&eacute;pendances <code class="code" id="gw3lnh_141">spring-cloud-starter-config</code> et <code class="code" id="gw3lnh_142">spring-cloud-starter-bootstrap</code>.</p></li><li class="list__item" id="gw3lnh_139"><p>Cr&eacute;ez un fichier <code class="code" id="gw3lnh_143">bootstrap.properties</code> avec <code class="code" id="gw3lnh_144">spring.application.name=order-service</code> et l'URL du Config Server.</p></li><li class="list__item" id="gw3lnh_140"><p>Nettoyez son <code class="code" id="gw3lnh_145">application.properties</code>.</p></li></ol><p id="gw3lnh_98"><b id="gw3lnh_146">3.5. Test final</b></p><ol class="list _decimal" id="gw3lnh_99" type="1"><li class="list__item" id="gw3lnh_147"><p>Assurez-vous que votre serveur Eureka est lanc&eacute;.</p></li><li class="list__item" id="gw3lnh_148"><p>Lancez votre Config Server depuis l'IDE.</p></li><li class="list__item" id="gw3lnh_149"><p>Lancez <code class="code" id="gw3lnh_152">product-service</code> depuis l'IDE. Observez les logs : vous devriez voir des lignes indiquant qu'il contacte le Config Server, comme <code class="code" id="gw3lnh_153">Fetching config from server at: http://localhost:8888</code>. V&eacute;rifiez dans Eureka qu'il s'est bien enregistr&eacute;.</p></li><li class="list__item" id="gw3lnh_150"><p>Lancez <code class="code" id="gw3lnh_154">order-service</code> depuis l'IDE. V&eacute;rifiez la m&ecirc;me chose.</p></li><li class="list__item" id="gw3lnh_151"><p>Testez l'appel de cr&eacute;ation de commande de `order-service` vers `product-service`. Tout doit fonctionner comme avant, mais cette fois, la configuration est venue de l'ext&eacute;rieur !</p></li></ol><ol class="list _decimal"></ol></section></section><section class="chapter"><h2 id="tape-4-dockerisation-du-config-server" data-toc="tape-4-dockerisation-du-config-server">&Eacute;tape 4 : Dockerisation du Config Server</h2><p id="gw3lnh_155">Comme pour les autres, nous le mettons en conteneur.</p><ol class="list _decimal" id="gw3lnh_156" type="1"><li class="list__item" id="gw3lnh_159"><p id="gw3lnh_161">Cr&eacute;ez le <code class="code" id="gw3lnh_163">Dockerfile</code> &agrave; la racine de <code class="code" id="gw3lnh_164">config-server</code>.</p><div class="code-block" data-lang="dockerfile">
+# ----- STAGE 1: Build -----
+FROM maven:3.8.5-openjdk-17 AS build
+WORKDIR /app
+COPY pom.xml .
+RUN mvn dependency:go-offline
+COPY src ./src
+RUN mvn package -DskipTests
+
+# ----- STAGE 2: Runtime -----
+FROM eclipse-temurin:17-jre-focal
+WORKDIR /app
+COPY --from=build /app/target/*.jar app.jar
+EXPOSE 8888
+ENTRYPOINT [&quot;java&quot;, &quot;-jar&quot;, &quot;app.jar&quot;]
+</div></li><li class="list__item" id="gw3lnh_160"><p id="gw3lnh_165">Construisez l'image :</p></li></ol><div class="code-block" data-lang="bash">
+  mvn clean package
+  docker build -t config-server:1.0 .
+</div></section><section class="chapter"><h2 id="exercice-8-mettre-jour-la-configuration-chaud" data-toc="exercice-8-mettre-jour-la-configuration-chaud">Exercice 8 : Mettre &agrave; jour la configuration &agrave; chaud</h2><p id="gw3lnh_166"><span class="control" id="gw3lnh_170">Contexte :</span> Un des grands avantages du Config Server est de pouvoir changer la configuration sans red&eacute;marrer les services. Pour cela, les services doivent &ecirc;tre capables de rafra&icirc;chir leur configuration.</p><p id="gw3lnh_167"><span class="control" id="gw3lnh_171">Votre mission :</span></p><ol class="list _decimal" id="gw3lnh_168" type="1"><li class="list__item" id="gw3lnh_172"><p id="gw3lnh_181">Dans le <code class="code" id="gw3lnh_182">pom.xml</code> de <code class="code" id="gw3lnh_183">product-service</code>, ajoutez la d&eacute;pendance <code class="code" id="gw3lnh_184">spring-boot-starter-actuator</code>.</p></li><li class="list__item" id="gw3lnh_173"><p id="gw3lnh_185">Dans le fichier <code class="code" id="gw3lnh_186">application.properties</code> du d&eacute;p&ocirc;t Git (<code class="code" id="gw3lnh_187">gestbook-config-repo</code>), ajoutez la ligne suivante pour exposer l'endpoint de rafra&icirc;chissement : <code class="code" id="gw3lnh_188">management.endpoints.web.exposure.include=health,info,refresh</code>. Commitez ce changement.</p></li><li class="list__item" id="gw3lnh_174"><p id="gw3lnh_189">Arr&ecirc;tez et relancez <code class="code" id="gw3lnh_190">config-server</code> et <code class="code" id="gw3lnh_191">product-service</code> pour qu'ils prennent en compte ces changements.</p></li><li class="list__item" id="gw3lnh_175"><p id="gw3lnh_192">Dans le fichier <code class="code" id="gw3lnh_193">product-service.properties</code> du d&eacute;p&ocirc;t Git, ajoutez une nouvelle propri&eacute;t&eacute; : <code class="code" id="gw3lnh_194">welcome.message=Hello from Git!</code>. Commitez ce changement.</p></li><li class="list__item" id="gw3lnh_176"><p id="gw3lnh_195">Cr&eacute;ez un endpoint de test <code class="code" id="gw3lnh_196">GET /api/products/welcome</code> dans le <code class="code" id="gw3lnh_197">ProductController</code> qui lit cette propri&eacute;t&eacute; avec <code class="code" id="gw3lnh_198">@Value(&quot;${welcome.message}&quot;)</code> et la retourne. Relancez <code class="code" id="gw3lnh_199">product-service</code>. Appelez l'endpoint, il doit retourner &quot; Hello from Git!&quot;.</p></li><li class="list__item" id="gw3lnh_177"><p id="gw3lnh_200"><span class="control" id="gw3lnh_201">La partie int&eacute;ressante :</span> Modifiez la valeur de <code class="code" id="gw3lnh_202">welcome.message</code> dans le d&eacute;p&ocirc;t Git en &quot;Hello, configuration updated!&quot;. Commitez.</p></li><li class="list__item" id="gw3lnh_178"><p id="gw3lnh_203">Appelez &agrave; nouveau <code class="code" id="gw3lnh_204">GET /api/products/welcome</code>. Le message n'a pas chang&eacute;.</p></li><li class="list__item" id="gw3lnh_179"><p id="gw3lnh_205">Maintenant, faites un appel <code class="code" id="gw3lnh_206">POST</code> vide &agrave; l'endpoint Actuator de rafra&icirc;chissement : <code class="code" id="gw3lnh_207">http://localhost:8081/actuator/refresh</code>.</p></li><li class="list__item" id="gw3lnh_180"><p id="gw3lnh_208">Appelez une derni&egrave;re fois <code class="code" id="gw3lnh_209">GET /api/products/welcome</code>. Quel est le r&eacute;sultat et pourquoi ?</p></li></ol><section class="chapter"><div class="collapse"><div class="collapse__title"><h3 id="correction-exercice-8" data-toc="correction-exercice-8">Correction exercice 8</h3></div><div class="collapse__content"><ol class="list _decimal" id="gw3lnh_210" type="1"><li class="list__item" id="gw3lnh_215"><p id="gw3lnh_217">&agrave; 7. : En suivant les &eacute;tapes, vous constaterez qu'apr&egrave;s avoir modifi&eacute; la configuration dans Git, le service continue d'afficher l'ancien message &quot;Hello from Git!&quot;. C'est normal, il ne recharge pas sa configuration en permanence.</p></li><li class="list__item" id="gw3lnh_216"><p id="gw3lnh_218">L'appel <code class="code" id="gw3lnh_219">POST</code> &agrave; <code class="code" id="gw3lnh_220">/actuator/refresh</code> d&eacute;clenche un &eacute;v&eacute;nement de rafra&icirc;chissement dans le <code class="code" id="gw3lnh_221">product-service</code>. Le service va alors re-contacter le Config Server, demander sa configuration, et comparer la nouvelle version avec celle qu'il a en m&eacute;moire. Il ne mettra &agrave; jour que les beans annot&eacute;s avec <code class="code" id="gw3lnh_222">@ConfigurationProperties</code> ou <code class="code" id="gw3lnh_223">@RefreshScope</code>.</p></li></ol><p id="gw3lnh_211"><span class="control" id="gw3lnh_224">Pour que cela fonctionne sur notre <code class="code" id="gw3lnh_225">@Value</code>, il faut annoter la classe <code class="code" id="gw3lnh_226">ProductController</code> avec <code class="code" id="gw3lnh_227">@RefreshScope</code>.</span></p><div class="code-block" data-lang="java">
+// Dans ProductController.java
+
+import org.springframework.cloud.context.config.annotation.RefreshScope;
+// ...
+
+@RestController
+@RequestMapping(&quot;/api/products&quot;)
+@RefreshScope // &lt;-- Annotation cruciale !
+public class ProductController {
+
+    @Value(&quot;${welcome.message:Default Welcome}&quot;)
+    private String welcomeMessage;
+    // ... reste du contrôleur
+
+    @GetMapping(&quot;/welcome&quot;)
+    public String getWelcomeMessage() {
+        return welcomeMessage;
+    }
+}
+</div><ol class="list _decimal" id="gw3lnh_213" type="1" start="9"><li class="list__item" id="gw3lnh_228"><p id="gw3lnh_229"><span class="control" id="gw3lnh_230">R&eacute;sultat final :</span> Apr&egrave;s avoir ajout&eacute; <code class="code" id="gw3lnh_231">@RefreshScope</code>, relanc&eacute; le service, modifi&eacute; la config dans Git, et appel&eacute; <code class="code" id="gw3lnh_232">/actuator/refresh</code>, un nouvel appel &agrave; <code class="code" id="gw3lnh_233">/api/products/welcome</code> retournera <span class="control" id="gw3lnh_234">&quot;Hello, configuration updated!&quot;</span>. L'annotation <code class="code" id="gw3lnh_235">@RefreshScope</code> a permis au bean <code class="code" id="gw3lnh_236">ProductController</code> d'&ecirc;tre d&eacute;truit et recr&eacute;&eacute; avec la nouvelle valeur de la propri&eacute;t&eacute;, sans avoir &agrave; red&eacute;marrer toute l'application.</p></li></ol></div></div></section></section><section class="chapter"><h2 id="auto-valuation" data-toc="auto-valuation">Auto-&eacute;valuation</h2><ol class="list _decimal" id="gw3lnh_237" type="1"><li class="list__item" id="gw3lnh_239"><p id="gw3lnh_244"><span class="control" id="gw3lnh_246">(QCM)</span> Quel est le port par d&eacute;faut conventionnel pour un Spring Cloud Config Server ?</p><ul class="list _bullet" id="gw3lnh_245"><li class="list__item" id="gw3lnh_247"><p id="gw3lnh_251">A) 8080</p></li><li class="list__item" id="gw3lnh_248"><p id="gw3lnh_252">B) 8761</p></li><li class="list__item" id="gw3lnh_249"><p id="gw3lnh_253">C) 8888</p></li><li class="list__item" id="gw3lnh_250"><p id="gw3lnh_254">D) 9090</p></li></ul></li><li class="list__item" id="gw3lnh_240"><p id="gw3lnh_255"><span class="control" id="gw3lnh_256">(Question ouverte)</span> J'ai mis &agrave; jour un fichier de configuration dans mon d&eacute;p&ocirc;t Git. Que dois-je faire pour que mes microservices (d&eacute;j&agrave; d&eacute;marr&eacute;s) prennent en compte ce changement, et quelle d&eacute;pendance et annotation sont n&eacute;cessaires c&ocirc;t&eacute; client ?</p></li><li class="list__item" id="gw3lnh_241"><p id="gw3lnh_257"><span class="control" id="gw3lnh_259">(QCM)</span> Dans le <code class="code" id="gw3lnh_260">bootstrap.properties</code> d'un client, &agrave; quoi sert la propri&eacute;t&eacute; <code class="code" id="gw3lnh_261">spring.application.name</code>?</p><ul class="list _bullet" id="gw3lnh_258"><li class="list__item" id="gw3lnh_262"><p id="gw3lnh_266">A) &Agrave; nommer le conteneur Docker.</p></li><li class="list__item" id="gw3lnh_263"><p id="gw3lnh_267">B) C'est le nom que le client utilisera pour s'enregistrer aupr&egrave;s d'Eureka.</p></li><li class="list__item" id="gw3lnh_264"><p id="gw3lnh_268">C) C'est le nom que le client enverra au Config Server pour identifier le fichier de configuration qu'il doit recevoir.</p></li><li class="list__item" id="gw3lnh_265"><p id="gw3lnh_269">D) C'est juste un commentaire.</p></li></ul></li><li class="list__item" id="gw3lnh_242"><p id="gw3lnh_270"><span class="control" id="gw3lnh_271">(Question ouverte)</span> Expliquez le r&ocirc;le du fichier <code class="code" id="gw3lnh_272">application.properties</code> par rapport aux fichiers <code class="code" id="gw3lnh_273">{nom-du-service}.properties</code> dans le d&eacute;p&ocirc;t Git de configuration.</p></li><li class="list__item" id="gw3lnh_243"><p id="gw3lnh_274"><span class="control" id="gw3lnh_276">(QCM)</span> Pour utiliser un d&eacute;p&ocirc;t Git local comme backend pour le Config Server, comment doit commencer la valeur de la propri&eacute;t&eacute; <code class="code" id="gw3lnh_277">spring.cloud.config.server.git.uri</code>?</p><ul class="list _bullet" id="gw3lnh_275"><li class="list__item" id="gw3lnh_278"><p id="gw3lnh_282">A) <code class="code" id="gw3lnh_283">http://</code></p></li><li class="list__item" id="gw3lnh_279"><p id="gw3lnh_284">B) <code class="code" id="gw3lnh_285">git://</code></p></li><li class="list__item" id="gw3lnh_280"><p id="gw3lnh_286">C) <code class="code" id="gw3lnh_287">classpath:</code></p></li><li class="list__item" id="gw3lnh_281"><p id="gw3lnh_288">D) <code class="code" id="gw3lnh_289">file:///</code></p></li></ul></li></ol></section><section class="chapter"><h2 id="conclusion" data-toc="conclusion">Conclusion</h2><p id="gw3lnh_290">Vous avez franchi une &eacute;tape majeure dans la professionnalisation de votre architecture. En externalisant et centralisant la configuration, vous avez &eacute;limin&eacute; la duplication, am&eacute;lior&eacute; la s&eacute;curit&eacute; et rendu votre syst&egrave;me beaucoup plus facile &agrave; g&eacute;rer et &agrave; faire &eacute;voluer.</p><p id="gw3lnh_291">Vous avez mis en place toute la cha&icirc;ne : le <span class="control" id="gw3lnh_293">d&eacute;p&ocirc;t Git</span>, le <span class="control" id="gw3lnh_294">Config Server</span> qui le lit, et les <span class="control" id="gw3lnh_295">services clients</span> qui viennent y chercher leur configuration au d&eacute;marrage. Vous avez m&ecirc;me explor&eacute; la mise &agrave; jour &agrave; chaud, une fonctionnalit&eacute; tr&egrave;s puissante en production.</p><p id="gw3lnh_292">Notre &eacute;cosyst&egrave;me devient de plus en plus robuste. Nous avons des services qui se d&eacute;couvrent dynamiquement et qui sont configur&eacute;s de mani&egrave;re centralis&eacute;e. Mais que se passe-t-il si l'un d'eux tombe en panne ? C'est le dernier pilier de la stabilit&eacute; que nous allons aborder : la <span class="control" id="gw3lnh_296">r&eacute;silience</span> avec le pattern Circuit Breaker.</p></section><div class="last-modified">17 juillet 2025</div><div data-feedback-placeholder="true"></div><div class="navigation-links _bottom"><a href="005-00-centralized-configuration.html" class="navigation-links__prev">Module 5 : La Configuration Centralis&eacute;e (L'essentiel)</a><a href="006-00-fault-tolerance.html" class="navigation-links__next">Module 6 : R&eacute;silience et Tol&eacute;rance aux Pannes - L'Art de ne pas s'effondrer (L'essentiel)</a></div></article><div id="disqus_thread"></div></div></section></main></div><script src="https://resources.jetbrains.com/writerside/apidoc/6.22.0-b776/app.js"></script></body></html>
